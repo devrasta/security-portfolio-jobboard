@@ -1,159 +1,83 @@
-# Turborepo starter
+# Jobboard Multitenant
 
-This Turborepo starter is maintained by the Turborepo core team.
+Monorepo Turborepo pour une plateforme de job board multi-tenant.
 
-## Using this example
+## Structure
 
-Run the following command:
+- `apps/api`: API [NestJS](https://nestjs.com/) — expose les routes REST, dont l'authentification (voir [apps/api/README.md](apps/api/README.md))
+- `apps/front`: application [Vue 3](https://vuejs.org/) (Vite, Pinia, Tailwind)
+- `packages/contracts`: contrats [oRPC](https://orpc.unnoq.com/) partagés (schémas `zod`), ex. `jobContract.ts`
+- `packages/eslint-config`: configurations `eslint` partagées
+- `packages/typescript-config`: `tsconfig.json`s partagés (mode `strict`, `isolatedModules`, `NodeNext`)
+
+Chaque package/app est en [TypeScript](https://www.typescriptlang.org/).
+
+## Prérequis
+
+- Node.js >= 18
+- pnpm 11
+- Une base PostgreSQL (utilisée par `apps/api` via Prisma)
+
+## Installation
 
 ```sh
-npx create-turbo@latest
+pnpm install
 ```
 
-## What's inside?
+Au premier `pnpm install`, pnpm peut demander d'approuver des build scripts natifs (`prisma`, `@prisma/engines`, `argon2`) nécessaires à l'API — ils sont déjà autorisés dans `pnpm-workspace.yaml`.
 
-This Turborepo includes the following packages/apps:
+### Configuration de l'API
 
-### Apps and Packages
+`apps/api` nécessite un fichier `.env` (voir `apps/api/env.example`) avec au minimum :
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```
+DATABASE_URL=postgresql://user:password@localhost:5432/jobboard_db
+JWT_SECRET=...        # 32+ caractères
+JWT_REFRESH_SECRET=...
+ENCRYPTION_KEY=...    # 64 caractères hex
+COOKIE_SECRET=...
 ```
 
-Without global `turbo`, use your package manager:
+Puis appliquer les migrations Prisma :
 
 ```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+pnpm --filter api migrate:dev
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Développement
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
-```
-
-Without global `turbo`:
+Avec [turbo](https://turborepo.dev) global (recommandé) :
 
 ```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
 turbo dev
 ```
 
-Without global `turbo`, use your package manager:
+Sans turbo global :
 
 ```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
 pnpm exec turbo dev
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+Pour ne lancer qu'une app :
 
 ```sh
-turbo dev --filter=web
+turbo dev --filter=api
+turbo dev --filter=front
 ```
 
-Without global `turbo`:
+## Build
 
 ```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+turbo build
 ```
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+## Lint / types
 
 ```sh
-cd my-turborepo
-turbo login
+pnpm lint
+pnpm check-types
 ```
 
-Without global `turbo`, use your package manager:
+## Authentification
 
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+Le module d'authentification de `apps/api` (login/register, refresh token, 2FA TOTP + backup codes, sessions actives, logs d'activité) a été porté depuis le projet `auth-system-refresh-2fa`. Il est actuellement **mono-tenant** : le scoping par tenant n'a pas encore été ajouté aux modèles `User` / `RefreshToken` / etc. Voir [apps/api/README.md](apps/api/README.md) pour le détail des modules et des variables d'environnement.

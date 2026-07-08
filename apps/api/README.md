@@ -1,30 +1,44 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# api
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API [NestJS](https://nestjs.com/) du job board multi-tenant. Écoute sur le port `3002` par défaut.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Modules
 
-## Description
+- `modules/auth`: register, login, refresh/logout de token, changement de mot de passe, 2FA (TOTP + QR code + backup codes)
+- `modules/users`: profil utilisateur
+- `modules/sessions`: liste et révocation des sessions actives (refresh tokens)
+- `modules/activity`: journal d'activité (login, logout, 2FA, refresh...) avec géolocalisation IP
+- `modules/security`: hashing (argon2), JWT, chiffrement (2FA secrets), guards (`JwtAuthGuard`), décorateurs (`@CurrentUser`)
+- `modules/prisma`: accès base de données (PostgreSQL via `@prisma/adapter-pg`)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+> Le module d'authentification a été porté depuis le projet `auth-system-refresh-2fa` et est actuellement **mono-tenant** : `User`, `RefreshToken`, `ActivityLog` et `TwoFactorSecret` ne sont pas encore scopés par tenant.
+
+## Configuration
+
+Copier `env.example` en `.env` et renseigner :
+
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Chaîne de connexion PostgreSQL |
+| `JWT_SECRET` | Secret du access token (32+ caractères) |
+| `JWT_REFRESH_SECRET` | Secret du refresh token (32+ caractères) |
+| `JWT_EXPIRES_IN` | Durée de vie de l'access token (ex. `60s`) |
+| `ENCRYPTION_KEY` | Clé AES-256 en hex (64 caractères) pour chiffrer les secrets 2FA |
+| `COOKIE_SECRET` | Secret de signature des cookies |
+| `CORS_ORIGIN` | Origine autorisée pour le frontend |
+| `PORT` | Port d'écoute (défaut `3002`) |
+
+Les variables sont validées au démarrage via un schéma `Joi` dans `app.module.ts`.
+
+## Base de données
+
+```bash
+# générer le client Prisma
+pnpm exec prisma generate
+
+# appliquer les migrations en dev
+pnpm run migrate:dev
+```
 
 ## Installation
 
@@ -32,42 +46,30 @@
 $ pnpm install
 ```
 
-## Running the app
+## Lancer l'app
 
 ```bash
-# development
-$ pnpm run start
+# développement (watch)
+$ pnpm run dev
 
-# watch mode
-$ pnpm run start:dev
+# debug (watch)
+$ pnpm run start:debug
 
-# production mode
+# production
 $ pnpm run start:prod
 ```
 
-## Test
+## Tests
 
 ```bash
-# unit tests
+# tests unitaires
 $ pnpm run test
 
-# e2e tests
+# tests e2e
 $ pnpm run test:e2e
 
-# test coverage
+# couverture
 $ pnpm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+> Deux suites de tests héritées du projet source échouent actuellement de façon connue et ne sont pas liées au portage : le mock de géolocalisation dans `activity.service.spec.ts`, et une erreur de parsing ESM sur `otplib` dans les specs de `two-factor.*`.
