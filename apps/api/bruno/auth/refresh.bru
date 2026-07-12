@@ -1,0 +1,23 @@
+meta {
+  name: Refresh Token
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/auth/refresh
+  body: none
+  auth: none
+}
+
+script:post-response {
+  if (res.body && res.body.accessToken) {
+    bru.setEnvVar("accessToken", res.body.accessToken);
+  }
+}
+
+docs {
+  Relies on the httpOnly `refreshToken` cookie set by Login — Bruno's
+  cookie jar will send it automatically if this collection previously
+  ran Login in the same environment.
+}

@@ -1,0 +1,20 @@
+meta {
+  name: 2FA Setup
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/auth/2fa/setup
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  Returns `{ secret, qrCode }` to seed an authenticator app before calling
+  2FA Enable.
+}

@@ -17,6 +17,8 @@ model User {
   twoFactorEnabled       Boolean  @default(false)
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
+  companys      CompanyUser[]
+  auditLogs    AuditLog[]
   refreshTokens RefreshToken[]
   activityLogs  ActivityLog[]
 
@@ -90,4 +92,72 @@ enum ActivityAction {
   TWO_FACTOR_ENABLED
   TWO_FACTOR_DISABLED
   BACKUP_CODE_USED
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  users     CompanyUser[]
+  jobs      Job[]
+  createdAt DateTime @default(now())
+}
+
+
+model CompanyUser {
+  id       String     @id @default(uuid())
+  userId   String
+  companyId String
+  role     CompanyRole
+  user     User   @relation(fields: [userId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id])
+
+  @@unique([userId, companyId])
+}
+
+enum CompanyRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model Job {
+  id          String    @id @default(uuid())
+  companyId    String
+  title       String
+  description String
+  status      JobStatus
+  ownerId     String
+  shareToken  String?   @unique // ABAC : accès par lien
+  invitees    JobInvite[]
+  company      Company    @relation(fields: [companyId], references: [id])
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime?
+}
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model JobInvite {
+  id        String   @id @default(uuid())
+  jobId     String
+  email     String
+  job       Job      @relation(fields: [jobId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([jobId, email])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  companyId  String?
+  action    String
+  resource  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }

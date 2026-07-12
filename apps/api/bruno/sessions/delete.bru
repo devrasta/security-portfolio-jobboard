@@ -1,0 +1,19 @@
+meta {
+  name: Delete Session
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/sessions/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: replace-with-session-id
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Login
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "test@example.com",
+    "password": "password_123"
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.accessToken) {
+    bru.setEnvVar("accessToken", res.body.accessToken);
+  }
+}
+
+docs {
+  On success (no 2FA), sets an httpOnly `refreshToken` cookie and returns
+  `{ accessToken, user: { id, name } }`.
+  
+  If the account has 2FA enabled, returns
+  `{ accessToken, twoFactorRequired: true }` instead (no cookie yet) —
+  use that accessToken with `Login 2FA` to complete the flow.
+}

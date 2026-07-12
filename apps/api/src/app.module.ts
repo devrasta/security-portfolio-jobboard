@@ -11,6 +11,8 @@ import * as Joi from 'joi';
 import { LoggerModule } from 'nestjs-pino';
 import { minutes, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CompanyModule } from './modules/company/company.module';
+import { MembersModule } from './modules/members/members.module';
 
 @Module({
   imports: [
@@ -78,11 +80,10 @@ import { APP_GUARD } from '@nestjs/core';
     SecurityModule,
     SessionsModule,
     ActivityModule,
+    CompanyModule,
+    MembersModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
-  ],
+  providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

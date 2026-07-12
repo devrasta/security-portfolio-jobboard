@@ -2,10 +2,8 @@ services:
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-jobboard_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your .env file}
-      POSTGRES_DB: ${POSTGRES_DB:-jobboard_db}
+    env_file:
+      - apps/api/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -14,7 +12,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-jobboard_user} -d ${POSTGRES_DB:-jobboard_db}",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}",
         ]
       interval: 5s
       timeout: 5s
@@ -30,16 +28,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      NODE_ENV: production
-      PORT: 3002
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5174}
-      DATABASE_URL: postgresql://${POSTGRES_USER:-jobboard_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-jobboard_db}
-      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in your .env file (min 32 chars)}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in your .env file (min 32 chars)}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY in your .env file (64 hex chars)}
-      COOKIE_SECRET: ${COOKIE_SECRET:?Set COOKIE_SECRET in your .env file}
+    env_file:
+      - apps/api/.env
     ports:
       - "${API_PORT:-3002}:3002"
     networks:

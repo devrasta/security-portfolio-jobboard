@@ -1,0 +1,26 @@
+meta {
+  name: List Activity
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/activity?action=&limit=20&offset=0
+  body: none
+  auth: bearer
+}
+
+params:query {
+  action:
+  limit: 20
+  offset: 0
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  `action` is optional and corresponds to the Prisma `ActivityAction` enum
+  (leave blank to fetch all actions).
+}

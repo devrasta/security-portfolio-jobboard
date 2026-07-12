@@ -1,0 +1,19 @@
+meta {
+  name: Delete Company
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/company/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: replace-with-company-id
+}
+
+docs {
+  Placeholder controller — currently no auth guard and no persistence.
+}
