@@ -31,7 +31,24 @@ export const createCompanyContract = oc
       id: z.string().uuid(),
     }),
   )
-  .output(z.string());
+  .output(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      slug: z.string(),
+      createdAt: z.coerce.date(),
+      users: z.array(
+        z.object({
+          role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
+          user: z.object({
+            id: z.string(),
+            name: z.string().nullable(),
+            email: z.string(),
+          }),
+        }),
+      ),
+    }),
+  );
 
   const deleteCompanyContract = oc
   .route({

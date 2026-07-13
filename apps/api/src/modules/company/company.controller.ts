@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Param,
-  Delete,
-  UseGuards,
-  Req,
-} from '@nestjs/common';
+import { Controller, Post, Get, Delete, UseGuards, Req } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import { CompanyService } from './company.service';
 import { Implement, implement } from '@orpc/nest';
@@ -31,14 +23,20 @@ export class CompanyController {
   }
 
   @Get(':id')
-  // @Implement(contract.company.get)
-  async getCompany(@Param('id') id: string) {
-    return `Company info for ID: ${id}`;
+  @Implement(contract.company.get)
+  async getCompany() {
+    return implement(contract.company.get).handler(({ input }) => {
+      const { id } = input;
+      return this.companyService.getCompany(id);
+    });
   }
 
   @Delete(':id')
-  // @Implement(contract.company.delete)
-  async deleteCompany(@Param('id') id: string) {
-    return `Company deleted for ID: ${id}`;
+  @Implement(contract.company.delete)
+  async deleteCompany() {
+    return implement(contract.company.delete).handler(({ input }) => {
+      const { id } = input;
+      return this.companyService.deleteCompany(id);
+    });
   }
 }

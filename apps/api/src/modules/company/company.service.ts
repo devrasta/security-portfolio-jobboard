@@ -34,4 +34,46 @@ export class CompanyService {
       throw new Error('Failed to create company');
     }
   }
+
+  async getCompany(id: string) {
+    try {
+      const company = await this.prisma.company.findUnique({
+        where: { id },
+        include: {
+          users: {
+            select: {
+              role: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!company) {
+        throw new Error('Company not found');
+      }
+      return company;
+    } catch (error) {
+      console.error('Error fetching company:', error);
+      throw new Error('Failed to fetch company');
+    }
+  }
+
+  async deleteCompany(id: string) {
+    try {
+      await this.prisma.company.delete({
+        where: { id },
+      });
+      return `Company deleted with ID: ${id}`;
+    } catch (error) {
+      console.error('Error deleting company:', error);
+      throw new Error('Failed to delete company');
+    }
+  }
 }
