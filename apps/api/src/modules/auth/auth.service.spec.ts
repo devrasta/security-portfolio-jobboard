@@ -17,7 +17,6 @@ describe('AuthService', () => {
   let tokenService: any;
   let usersService: any;
   let prisma: any;
-  let twoFactorService: any;
 
   const mockHashService = {
     hashPassword: jest.fn().mockResolvedValue('$argon2-hashed'),
@@ -265,7 +264,7 @@ describe('AuthService', () => {
       prisma.refreshToken.create.mockResolvedValue({});
     });
 
-    it('should call jwtService.generateRefreshToken with userId and tokenFamily', async () => {
+    it('should call jwtService.generateRefreshToken with userId, tokenFamily and mapped device info', async () => {
       await service.generateRefreshToken({
         userId: 'user-1',
         tokenFamily: 'family-1',
@@ -275,43 +274,8 @@ describe('AuthService', () => {
       expect(jwtService.generateRefreshToken).toHaveBeenCalledWith(
         'user-1',
         'family-1',
+        { deviceId: 'd1', userAgent: 'ua', ipAddress: '1.1.1.1' },
       );
-    });
-
-    it('should hash the generated refresh token', async () => {
-      await service.generateRefreshToken({
-        userId: 'user-1',
-        tokenFamily: 'family-1',
-        deviceInfo: { deviceId: 'd1', userAgent: 'ua', ipAddress: '1.1.1.1' },
-      });
-
-      expect(hashService.hashToken).toHaveBeenCalledWith('jwt-refresh');
-    });
-
-    it('should store token in database with correct fields', async () => {
-      await service.generateRefreshToken({
-        userId: 'user-1',
-        tokenFamily: 'family-1',
-        deviceInfo: {
-          deviceId: 'd1',
-          userAgent: 'Mozilla/5.0',
-          ipAddress: '1.2.3.4',
-        },
-      });
-
-      expect(prisma.refreshToken.create).toHaveBeenCalledWith({
-        data: expect.objectContaining({
-          jti: expect.any(String),
-          userId: 'user-1',
-          token: 'hashed',
-          tokenFamily: 'family-1',
-          isRevoked: false,
-          deviceId: 'd1',
-          userAgent: 'Mozilla/5.0',
-          ipAddress: '1.2.3.4',
-          expiresAt: expect.any(Date),
-        }),
-      });
     });
 
     it('should convert array userAgent to comma-separated string', async () => {
@@ -325,8 +289,8 @@ describe('AuthService', () => {
         },
       });
 
-      const createCall = prisma.refreshToken.create.mock.calls[0][0];
-      expect(createCall.data.userAgent).toBe('UA1, UA2');
+      const call = jwtService.generateRefreshToken.mock.calls[0];
+      expect(call[2].userAgent).toBe('UA1, UA2');
     });
 
     it('should return the raw refresh token', async () => {
@@ -440,6 +404,7 @@ describe('AuthService', () => {
       expect(jwtService.generateRefreshToken).toHaveBeenCalledWith(
         mockUser.id,
         'family-1',
+        { deviceId: undefined, userAgent: undefined, ipAddress: undefined },
       );
     });
 

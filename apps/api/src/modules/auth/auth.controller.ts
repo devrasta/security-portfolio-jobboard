@@ -79,7 +79,7 @@ export class AuthController {
       res.cookie('refreshToken', this.cryptoService.encrypt(refreshToken), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
+        sameSite: 'strict',
         maxAge: days(7),
       });
       return { accessToken, user };
@@ -115,7 +115,7 @@ export class AuthController {
       {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
+        sameSite: 'strict',
         maxAge: days(7),
       },
     );
@@ -170,7 +170,7 @@ export class AuthController {
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      sameSite: 'strict',
     });
     await this.activityService.logActivity({
       action: 'LOGOUT',
@@ -207,7 +207,7 @@ export class AuthController {
         {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
-          sameSite: 'none',
+          sameSite: 'strict',
           maxAge: days(7),
         },
       );

@@ -13,7 +13,7 @@ export const createCompanyContract = oc
       users: z.optional(
         z.array(
           z.object({
-            email: z.uuid(),
+            id: z.uuid(),
           }),
         ),
       ),

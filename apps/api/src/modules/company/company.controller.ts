@@ -1,9 +1,18 @@
-import { Controller, Post, Get, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import { CompanyService } from './company.service';
-import { Implement, implement } from "@orpc/nest"
-import { contract } from "@repo/contracts"
+import { Implement, implement } from '@orpc/nest';
+import { contract } from '@repo/contracts';
 import { JwtAuthGuard } from '../security/guards/jwt-auth.guard';
+import type { Request, Response } from 'express';
 
 @Controller('company')
 export class CompanyController {
@@ -13,10 +22,11 @@ export class CompanyController {
   @SkipThrottle() // TODO retirer cette ligne une fois que le guard est en place
   @Post()
   @Implement(contract.company.create)
-  async createCompany() {
+  async createCompany(@Req() req: Request) {
     return implement(contract.company.create).handler(({ input }) => {
       const { name, users } = input;
-      return this.companyService.createCompany(name, users);
+      const userId = req.user['sub'];
+      return this.companyService.createCompany(name, userId, users);
     });
   }
 

@@ -45,7 +45,7 @@ services:
     depends_on:
       - api
     ports:
-      - "${FRONT_PORT:-5174}:80"
+      - "${FRONT_PORT:-5174}:8080"
     networks:
       - jobboard
 

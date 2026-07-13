@@ -1,10 +1,17 @@
 packages:
   - "apps/*"
   - "packages/*"
+overrides:
+  glob: ^12.0.0
+  '@hono/node-server': ^1.19.13
+  form-data: ^4.0.6
+  undici: ^7.28.0
+  js-yaml: ^4.1.2
+  '@istanbuljs/load-nyc-config>js-yaml': ^3.15.0
 allowBuilds:
   '@nestjs/core': true
   '@prisma/engines': true
-  '@scarf/scarf': set this to true or false
+  '@scarf/scarf': false
   argon2: true
   prisma: true
   unrs-resolver: true
@@ -16,3 +23,19 @@ minimumReleaseAgeExclude:
   - '@turbo/windows-64@2.9.16'
   - '@turbo/windows-arm64@2.9.16'
   - turbo@2.9.16
+  - '@orpc/client@1.14.8'
+  - '@orpc/contract@1.14.8'
+  - '@orpc/interop@1.14.8'
+  - '@orpc/json-schema@1.14.8'
+  - '@orpc/nest@1.14.8'
+  - '@orpc/openapi-client@1.14.8'
+  - '@orpc/openapi@1.14.8'
+  - '@orpc/server@1.14.8'
+  - '@orpc/shared@1.14.8'
+  - '@orpc/standard-server-aws-lambda@1.14.8'
+  - '@orpc/standard-server-fastify@1.14.8'
+  - '@orpc/standard-server-fetch@1.14.8'
+  - '@orpc/standard-server-node@1.14.8'
+  - '@orpc/standard-server-peer@1.14.8'
+  - '@orpc/standard-server@1.14.8'
+  - '@orpc/zod@1.14.8'

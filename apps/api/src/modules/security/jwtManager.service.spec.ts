@@ -157,10 +157,9 @@ describe('JwtManagerService', () => {
     it('should call nestJwtService.verify with token and secret', () => {
       service.verifyAccessToken('some-token');
 
-      expect(nestJwtService.verify).toHaveBeenCalledWith(
-        'some-token',
-        'test-jwt-secret-32chars-minimum!!',
-      );
+      expect(nestJwtService.verify).toHaveBeenCalledWith('some-token', {
+        secret: 'test-jwt-secret-32chars-minimum!!',
+      });
     });
 
     it('should return the decoded payload', () => {

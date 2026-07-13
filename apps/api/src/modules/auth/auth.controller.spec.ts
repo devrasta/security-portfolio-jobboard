@@ -5,6 +5,8 @@ import { AuthService } from './auth.service';
 import { ActivityService } from '../activity/activity.service';
 import { CryptoService } from '../security/crypto.service';
 import { ValidationService } from '@/modules/security/validation.service';
+import { MailThrottlerGuard } from './mail-throttler.guard';
+import { JwtAuthGuard } from '../security/guards/jwt-auth.guard';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -62,7 +64,12 @@ describe('AuthController', () => {
         { provide: CryptoService, useValue: mockCryptoService },
         { provide: ValidationService, useValue: mockValidationService },
       ],
-    }).compile();
+    })
+      .overrideGuard(MailThrottlerGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<AuthController>(AuthController);
     authService = module.get(AuthService);
@@ -173,7 +180,10 @@ describe('AuthController', () => {
       await controller.logIn(loginDto, req as any, res as any);
 
       expect(activityService.logActivity).toHaveBeenCalledWith(
-        expect.objectContaining({ action: 'LOGIN_SUCCESS', userId: mockUser.id }),
+        expect.objectContaining({
+          action: 'LOGIN_SUCCESS',
+          userId: mockUser.id,
+        }),
       );
     });
 
@@ -213,12 +223,12 @@ describe('AuthController', () => {
       const req = { ...mockReq(), cookies: {} };
       const res = mockRes();
 
-      await expect(
-        controller.refresh(req as any, res as any),
-      ).rejects.toThrow(UnauthorizedException);
-      await expect(
-        controller.refresh(req as any, res as any),
-      ).rejects.toThrow('Refresh token not found');
+      await expect(controller.refresh(req as any, res as any)).rejects.toThrow(
+        UnauthorizedException,
+      );
+      await expect(controller.refresh(req as any, res as any)).rejects.toThrow(
+        'Refresh token not found',
+      );
     });
 
     it('should decrypt the encrypted cookie and call authService.refresh', async () => {
@@ -444,7 +454,11 @@ describe('AuthController', () => {
       const req = mockReq();
       const res = mockRes();
 
-      const result = await controller.loginWith2FA(body, req as any, res as any);
+      const result = await controller.loginWith2FA(
+        body,
+        req as any,
+        res as any,
+      );
 
       expect(result).toEqual({ accessToken: 'final-access', user: mockUser });
     });

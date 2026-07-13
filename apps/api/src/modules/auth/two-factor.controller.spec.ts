@@ -3,6 +3,8 @@ import { TwoFactorController } from './two-factor.controller';
 import { TwoFactorService } from './two-factor.service';
 import { Enable2FADto } from './dto/enable-2fa.dto';
 import { Disable2FADto } from './dto/disable-2fa.dto';
+import { JwtAuthGuard } from '../security/guards/jwt-auth.guard';
+import { ActivityService } from '../activity/activity.service';
 
 describe('TwoFactorController', () => {
   let controller: TwoFactorController;
@@ -15,13 +17,28 @@ describe('TwoFactorController', () => {
     disableTwoFactor: jest.fn(),
   };
 
+  const mockActivityService = {
+    logActivity: jest.fn().mockResolvedValue(undefined),
+  };
+
+  const mockReq = () =>
+    ({
+      ip: '1.2.3.4',
+      headers: { 'user-agent': 'Jest/1.0' },
+      user: { userId: 'user-1' },
+    }) as any;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TwoFactorController],
       providers: [
         { provide: TwoFactorService, useValue: mockTwoFactorService },
+        { provide: ActivityService, useValue: mockActivityService },
       ],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<TwoFactorController>(TwoFactorController);
     twoFactorService = module.get(TwoFactorService);
@@ -45,7 +62,10 @@ describe('TwoFactorController', () => {
     });
 
     it('should return secret and qrCode', async () => {
-      const expected = { secret: 'TOTP_SECRET', qrCode: 'data:image/png;base64,qr' };
+      const expected = {
+        secret: 'TOTP_SECRET',
+        qrCode: 'data:image/png;base64,qr',
+      };
       mockTwoFactorService.generateSecret.mockResolvedValue(expected);
 
       const result = await controller.setup('user-1');
@@ -61,7 +81,7 @@ describe('TwoFactorController', () => {
         backupCodes: ['CODE1', 'CODE2'],
       });
 
-      controller.enable(dto, 'user-1');
+      controller.enable(dto, 'user-1', mockReq());
 
       expect(twoFactorService.enableTwoFactor).toHaveBeenCalledWith(
         'user-1',
@@ -74,7 +94,7 @@ describe('TwoFactorController', () => {
       const expected = { backupCodes: ['CODE1', 'CODE2'] };
       mockTwoFactorService.enableTwoFactor.mockResolvedValue(expected);
 
-      const result = await controller.enable(dto, 'user-1');
+      const result = await controller.enable(dto, 'user-1', mockReq());
 
       expect(result).toEqual(expected);
     });
@@ -86,7 +106,9 @@ describe('TwoFactorController', () => {
 
       await controller.status('user-1');
 
-      expect(twoFactorService.isTwoFactorEnabled).toHaveBeenCalledWith('user-1');
+      expect(twoFactorService.isTwoFactorEnabled).toHaveBeenCalledWith(
+        'user-1',
+      );
     });
 
     it('should return { isEnabled: true } when 2FA is enabled', async () => {
@@ -111,7 +133,7 @@ describe('TwoFactorController', () => {
       const dto: Disable2FADto = { code: '123456' };
       mockTwoFactorService.disableTwoFactor.mockResolvedValue(undefined);
 
-      await controller.disable(dto, 'user-1');
+      await controller.disable(dto, 'user-1', mockReq());
 
       expect(twoFactorService.disableTwoFactor).toHaveBeenCalledWith(
         'user-1',
@@ -123,7 +145,7 @@ describe('TwoFactorController', () => {
       const dto: Disable2FADto = { code: '123456' };
       mockTwoFactorService.disableTwoFactor.mockResolvedValue(undefined);
 
-      const result = await controller.disable(dto, 'user-1');
+      const result = await controller.disable(dto, 'user-1', mockReq());
 
       expect(result).toEqual({
         message: 'Two-factor authentication disabled',
@@ -136,9 +158,9 @@ describe('TwoFactorController', () => {
         new Error('Invalid 2FA code'),
       );
 
-      await expect(controller.disable(dto, 'user-1')).rejects.toThrow(
-        'Invalid 2FA code',
-      );
+      await expect(
+        controller.disable(dto, 'user-1', mockReq()),
+      ).rejects.toThrow('Invalid 2FA code');
     });
   });
 });

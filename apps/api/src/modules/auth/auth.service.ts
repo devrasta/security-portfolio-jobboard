@@ -56,17 +56,10 @@ export class AuthService {
     if (!this.validationService.isValidEmail(dto.email)) {
       throw new BadRequestException('Invalid email');
     }
-    const passStrength = this.validationService.getPasswordStrength(
-      dto.password,
-    );
-    console.log('Password strength check:', passStrength);
-    if (passStrength < 4) {
-      const passStrength = this.validationService.getPasswordStrength(
-        dto.password,
-      );
+    if (!this.validationService.isStrongPassword(dto.password)) {
       throw new BadRequestException({
         message: 'Weak password',
-        strength: passStrength,
+        strength: this.validationService.getPasswordStrength(dto.password),
       });
     }
 

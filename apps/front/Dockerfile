@@ -27,7 +27,14 @@ RUN pnpm --filter front run build-only
 # ---- runtime image: static files served by nginx ----
 FROM nginx:1.27-alpine AS runtime
 COPY apps/front/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /repo/apps/front/dist /usr/share/nginx/html
+COPY --from=build --chown=nginx:nginx /repo/apps/front/dist /usr/share/nginx/html
 
-EXPOSE 80
+# the official image ships an "nginx" user; nginx itself needs write access
+# to these dirs (cache/pid) even when serving purely static content
+RUN chown -R nginx:nginx /var/cache/nginx /var/run \
+    && touch /var/run/nginx.pid \
+    && chown nginx:nginx /var/run/nginx.pid
+
+USER nginx
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]

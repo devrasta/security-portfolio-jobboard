@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { Test, TestingModule } from '@nestjs/testing';
 import { ActivityService } from './activity.service';
 import { PrismaService } from '@/modules/prisma/prisma.service';
@@ -65,6 +66,8 @@ describe('ActivityService', () => {
 
     it('should store activity with geolocation data', async () => {
       global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        headers: { get: () => 'application/json' },
         json: jest
           .fn()
           .mockResolvedValue({ country_name: 'France', city: 'Paris' }),

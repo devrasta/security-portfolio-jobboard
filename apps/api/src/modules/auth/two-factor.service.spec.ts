@@ -3,10 +3,13 @@ import { BadRequestException } from '@nestjs/common';
 import { TwoFactorService } from './two-factor.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { HashService } from '@/modules/security/hash.service';
+import { UsersService } from '../users/users.service';
 
 jest.mock('otplib', () => ({
   generateSecret: jest.fn().mockReturnValue('TOTP_SECRET_BASE32'),
-  generateURI: jest.fn().mockReturnValue('otpauth://totp/Test?secret=TOTP_SECRET_BASE32'),
+  generateURI: jest
+    .fn()
+    .mockReturnValue('otpauth://totp/Test?secret=TOTP_SECRET_BASE32'),
   verify: jest.fn(),
 }));
 
@@ -20,7 +23,6 @@ import { toDataURL } from 'qrcode';
 describe('TwoFactorService', () => {
   let service: TwoFactorService;
   let prisma: any;
-  let hashService: any;
 
   const mockPrismaService = {
     user: {
@@ -38,6 +40,10 @@ describe('TwoFactorService', () => {
     generateSecureToken: jest.fn(),
     hashPassword: jest.fn(),
     verifyPassword: jest.fn(),
+  };
+
+  const mockUsersService = {
+    toggleTwoFactor: jest.fn(),
   };
 
   const mockUser = {
@@ -58,12 +64,12 @@ describe('TwoFactorService', () => {
         TwoFactorService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: HashService, useValue: mockHashService },
+        { provide: UsersService, useValue: mockUsersService },
       ],
     }).compile();
 
     service = module.get<TwoFactorService>(TwoFactorService);
     prisma = module.get(PrismaService);
-    hashService = module.get(HashService);
     jest.clearAllMocks();
   });
 
@@ -106,7 +112,9 @@ describe('TwoFactorService', () => {
       mockPrismaService.twoFactorSecret.upsert.mockResolvedValue({});
       (generateSecret as jest.Mock).mockReturnValue('TOTP_SECRET_BASE32');
       (generateURI as jest.Mock).mockReturnValue('otpauth://totp/test');
-      (toDataURL as jest.Mock).mockResolvedValue('data:image/png;base64,qrcode');
+      (toDataURL as jest.Mock).mockResolvedValue(
+        'data:image/png;base64,qrcode',
+      );
     });
 
     it('should find the user by id', async () => {

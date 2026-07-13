@@ -3,11 +3,11 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CompanyService {
-    constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-    createCompany(name: string, users?: { email: string }[]) {
-        // Implement the logic to create a company and associate users
-        return `Company created with name: ${name} and users: ${(users ?? []).map(u => u.email).join(', ')}`;
-    }
-
+  createCompany(name: string, userId: string, users?: { id: string }[]) {
+    // Implement the logic to create a company and associate users
+    // this.prisma.
+    return `Company created with name: ${name} and users: ${userId} + ${users ?? []}`;
+  }
 }

@@ -86,7 +86,7 @@ export class TwoFactorService {
         backupCodes: hashedCodes,
       },
     });
-    
+
     return { backupCodes };
   }
 

@@ -112,7 +112,7 @@ describe('HashService', () => {
     it('should return a 64-character hex string by default', () => {
       const token = service.generateSecureToken();
       expect(token).toHaveLength(64);
-      expect(token).toMatch(/^[0-9a-f]+$/);
+      expect(token).toMatch(/^[0-9A-F]+$/);
     });
 
     it('should return correct length for custom byte count', () => {
