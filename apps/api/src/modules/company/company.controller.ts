@@ -25,7 +25,7 @@ export class CompanyController {
   async createCompany(@Req() req: Request) {
     return implement(contract.company.create).handler(({ input }) => {
       const { name, users } = input;
-      const userId = req.user['sub'];
+      const userId = req.user.userId;
       return this.companyService.createCompany(name, userId, users);
     });
   }
