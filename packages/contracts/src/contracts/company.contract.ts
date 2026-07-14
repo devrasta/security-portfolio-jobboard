@@ -62,8 +62,64 @@ export const createCompanyContract = oc
   )
   .output(z.string());
 
+  const inviteMemberContract = oc
+    .route({
+      method: "POST",
+      path: "/tenants/:id/members",
+    })
+    .input(
+      z.object({
+        id: z.uuid(),
+        userId: z.uuid(),
+      }),
+    )
+    .output(z.string());
+
+  const changeMemberRoleContract = oc
+    .route({
+      method: "PATCH",
+      path: "/tenants/:id/members/:userId",
+    })
+    .input(
+      z.object({
+        id: z.uuid(),
+        userId: z.uuid(),
+        role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
+      }),
+    )
+    .output(z.string());
+
+  const removeMemberContract = oc
+    .route({
+      method: "DELETE",
+      path: "/tenants/:id/members/:userId",
+    })
+    .input(
+      z.object({
+        id: z.uuid(),
+        userId: z.uuid(),
+      }),
+    )
+    .output(z.string());
+
+  const listMembersContract = oc
+    .route({
+      method: "GET",
+      path: "/tenants/:id/members",
+    })
+    .input(
+      z.object({
+        id: z.uuid(),
+      }),
+    )
+    .output(z.string());
+
 export const CompanyContract = {
-    create: createCompanyContract,
-    get: getCompanyContract,
-    delete: deleteCompanyContract,
+  create: createCompanyContract,
+  get: getCompanyContract,
+  delete: deleteCompanyContract,
+  inviteMember: inviteMemberContract,
+  changeMemberRole: changeMemberRoleContract,
+  removeMember: removeMemberContract,
+  listMembers: listMembersContract,
 };
