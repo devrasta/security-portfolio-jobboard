@@ -214,6 +214,7 @@ export type JobWhereInput = {
   shareToken?: Prisma.StringNullableFilter<"Job"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
+  owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   invitees?: Prisma.JobInviteListRelationFilter
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
 }
@@ -228,6 +229,7 @@ export type JobOrderByWithRelationInput = {
   shareToken?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  owner?: Prisma.UserOrderByWithRelationInput
   invitees?: Prisma.JobInviteOrderByRelationAggregateInput
   company?: Prisma.CompanyOrderByWithRelationInput
 }
@@ -245,6 +247,7 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   ownerId?: Prisma.StringFilter<"Job"> | string
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   expiresAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
+  owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   invitees?: Prisma.JobInviteListRelationFilter
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
 }, "id" | "shareToken">
@@ -284,10 +287,10 @@ export type JobCreateInput = {
   title: string
   description: string
   status: $Enums.JobStatus
-  ownerId: string
   shareToken?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
+  owner: Prisma.UserCreateNestedOneWithoutJobsInput
   invitees?: Prisma.JobInviteCreateNestedManyWithoutJobInput
   company: Prisma.CompanyCreateNestedOneWithoutJobsInput
 }
@@ -310,10 +313,10 @@ export type JobUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   shareToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  owner?: Prisma.UserUpdateOneRequiredWithoutJobsNestedInput
   invitees?: Prisma.JobInviteUpdateManyWithoutJobNestedInput
   company?: Prisma.CompanyUpdateOneRequiredWithoutJobsNestedInput
 }
@@ -348,7 +351,6 @@ export type JobUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   shareToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -417,6 +419,48 @@ export type JobScalarRelationFilter = {
   isNot?: Prisma.JobWhereInput
 }
 
+export type JobCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutOwnerInput, Prisma.JobUncheckedCreateWithoutOwnerInput> | Prisma.JobCreateWithoutOwnerInput[] | Prisma.JobUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutOwnerInput | Prisma.JobCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.JobCreateManyOwnerInputEnvelope
+  connect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+}
+
+export type JobUncheckedCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutOwnerInput, Prisma.JobUncheckedCreateWithoutOwnerInput> | Prisma.JobCreateWithoutOwnerInput[] | Prisma.JobUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutOwnerInput | Prisma.JobCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.JobCreateManyOwnerInputEnvelope
+  connect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+}
+
+export type JobUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutOwnerInput, Prisma.JobUncheckedCreateWithoutOwnerInput> | Prisma.JobCreateWithoutOwnerInput[] | Prisma.JobUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutOwnerInput | Prisma.JobCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.JobUpsertWithWhereUniqueWithoutOwnerInput | Prisma.JobUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.JobCreateManyOwnerInputEnvelope
+  set?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  disconnect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  delete?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  connect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  update?: Prisma.JobUpdateWithWhereUniqueWithoutOwnerInput | Prisma.JobUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.JobUpdateManyWithWhereWithoutOwnerInput | Prisma.JobUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
+}
+
+export type JobUncheckedUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutOwnerInput, Prisma.JobUncheckedCreateWithoutOwnerInput> | Prisma.JobCreateWithoutOwnerInput[] | Prisma.JobUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutOwnerInput | Prisma.JobCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.JobUpsertWithWhereUniqueWithoutOwnerInput | Prisma.JobUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.JobCreateManyOwnerInputEnvelope
+  set?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  disconnect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  delete?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  connect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  update?: Prisma.JobUpdateWithWhereUniqueWithoutOwnerInput | Prisma.JobUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.JobUpdateManyWithWhereWithoutOwnerInput | Prisma.JobUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
+}
+
 export type JobCreateNestedManyWithoutCompanyInput = {
   create?: Prisma.XOR<Prisma.JobCreateWithoutCompanyInput, Prisma.JobUncheckedCreateWithoutCompanyInput> | Prisma.JobCreateWithoutCompanyInput[] | Prisma.JobUncheckedCreateWithoutCompanyInput[]
   connectOrCreate?: Prisma.JobCreateOrConnectWithoutCompanyInput | Prisma.JobCreateOrConnectWithoutCompanyInput[]
@@ -477,15 +521,80 @@ export type JobUpdateOneRequiredWithoutInviteesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutInviteesInput, Prisma.JobUpdateWithoutInviteesInput>, Prisma.JobUncheckedUpdateWithoutInviteesInput>
 }
 
+export type JobCreateWithoutOwnerInput = {
+  id?: string
+  title: string
+  description: string
+  status: $Enums.JobStatus
+  shareToken?: string | null
+  createdAt?: Date | string
+  expiresAt?: Date | string | null
+  invitees?: Prisma.JobInviteCreateNestedManyWithoutJobInput
+  company: Prisma.CompanyCreateNestedOneWithoutJobsInput
+}
+
+export type JobUncheckedCreateWithoutOwnerInput = {
+  id?: string
+  companyId: string
+  title: string
+  description: string
+  status: $Enums.JobStatus
+  shareToken?: string | null
+  createdAt?: Date | string
+  expiresAt?: Date | string | null
+  invitees?: Prisma.JobInviteUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type JobCreateOrConnectWithoutOwnerInput = {
+  where: Prisma.JobWhereUniqueInput
+  create: Prisma.XOR<Prisma.JobCreateWithoutOwnerInput, Prisma.JobUncheckedCreateWithoutOwnerInput>
+}
+
+export type JobCreateManyOwnerInputEnvelope = {
+  data: Prisma.JobCreateManyOwnerInput | Prisma.JobCreateManyOwnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type JobUpsertWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.JobWhereUniqueInput
+  update: Prisma.XOR<Prisma.JobUpdateWithoutOwnerInput, Prisma.JobUncheckedUpdateWithoutOwnerInput>
+  create: Prisma.XOR<Prisma.JobCreateWithoutOwnerInput, Prisma.JobUncheckedCreateWithoutOwnerInput>
+}
+
+export type JobUpdateWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.JobWhereUniqueInput
+  data: Prisma.XOR<Prisma.JobUpdateWithoutOwnerInput, Prisma.JobUncheckedUpdateWithoutOwnerInput>
+}
+
+export type JobUpdateManyWithWhereWithoutOwnerInput = {
+  where: Prisma.JobScalarWhereInput
+  data: Prisma.XOR<Prisma.JobUpdateManyMutationInput, Prisma.JobUncheckedUpdateManyWithoutOwnerInput>
+}
+
+export type JobScalarWhereInput = {
+  AND?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
+  OR?: Prisma.JobScalarWhereInput[]
+  NOT?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
+  id?: Prisma.StringFilter<"Job"> | string
+  companyId?: Prisma.StringFilter<"Job"> | string
+  title?: Prisma.StringFilter<"Job"> | string
+  description?: Prisma.StringFilter<"Job"> | string
+  status?: Prisma.EnumJobStatusFilter<"Job"> | $Enums.JobStatus
+  ownerId?: Prisma.StringFilter<"Job"> | string
+  shareToken?: Prisma.StringNullableFilter<"Job"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
+  expiresAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
+}
+
 export type JobCreateWithoutCompanyInput = {
   id?: string
   title: string
   description: string
   status: $Enums.JobStatus
-  ownerId: string
   shareToken?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
+  owner: Prisma.UserCreateNestedOneWithoutJobsInput
   invitees?: Prisma.JobInviteCreateNestedManyWithoutJobInput
 }
 
@@ -527,30 +636,15 @@ export type JobUpdateManyWithWhereWithoutCompanyInput = {
   data: Prisma.XOR<Prisma.JobUpdateManyMutationInput, Prisma.JobUncheckedUpdateManyWithoutCompanyInput>
 }
 
-export type JobScalarWhereInput = {
-  AND?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
-  OR?: Prisma.JobScalarWhereInput[]
-  NOT?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
-  id?: Prisma.StringFilter<"Job"> | string
-  companyId?: Prisma.StringFilter<"Job"> | string
-  title?: Prisma.StringFilter<"Job"> | string
-  description?: Prisma.StringFilter<"Job"> | string
-  status?: Prisma.EnumJobStatusFilter<"Job"> | $Enums.JobStatus
-  ownerId?: Prisma.StringFilter<"Job"> | string
-  shareToken?: Prisma.StringNullableFilter<"Job"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
-  expiresAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
-}
-
 export type JobCreateWithoutInviteesInput = {
   id?: string
   title: string
   description: string
   status: $Enums.JobStatus
-  ownerId: string
   shareToken?: string | null
   createdAt?: Date | string
   expiresAt?: Date | string | null
+  owner: Prisma.UserCreateNestedOneWithoutJobsInput
   company: Prisma.CompanyCreateNestedOneWithoutJobsInput
 }
 
@@ -587,10 +681,10 @@ export type JobUpdateWithoutInviteesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   shareToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  owner?: Prisma.UserUpdateOneRequiredWithoutJobsNestedInput
   company?: Prisma.CompanyUpdateOneRequiredWithoutJobsNestedInput
 }
 
@@ -601,6 +695,52 @@ export type JobUncheckedUpdateWithoutInviteesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  shareToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type JobCreateManyOwnerInput = {
+  id?: string
+  companyId: string
+  title: string
+  description: string
+  status: $Enums.JobStatus
+  shareToken?: string | null
+  createdAt?: Date | string
+  expiresAt?: Date | string | null
+}
+
+export type JobUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+  shareToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitees?: Prisma.JobInviteUpdateManyWithoutJobNestedInput
+  company?: Prisma.CompanyUpdateOneRequiredWithoutJobsNestedInput
+}
+
+export type JobUncheckedUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+  shareToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitees?: Prisma.JobInviteUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type JobUncheckedUpdateManyWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   shareToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -622,10 +762,10 @@ export type JobUpdateWithoutCompanyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
-  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   shareToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  owner?: Prisma.UserUpdateOneRequiredWithoutJobsNestedInput
   invitees?: Prisma.JobInviteUpdateManyWithoutJobNestedInput
 }
 
@@ -693,6 +833,7 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   shareToken?: boolean
   createdAt?: boolean
   expiresAt?: boolean
+  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   invitees?: boolean | Prisma.Job$inviteesArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.JobCountOutputTypeDefaultArgs<ExtArgs>
@@ -708,6 +849,7 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   shareToken?: boolean
   createdAt?: boolean
   expiresAt?: boolean
+  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["job"]>
 
@@ -721,6 +863,7 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   shareToken?: boolean
   createdAt?: boolean
   expiresAt?: boolean
+  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["job"]>
 
@@ -738,20 +881,24 @@ export type JobSelectScalar = {
 
 export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyId" | "title" | "description" | "status" | "ownerId" | "shareToken" | "createdAt" | "expiresAt", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   invitees?: boolean | Prisma.Job$inviteesArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.JobCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type JobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
 }
 export type JobIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
 }
 
 export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Job"
   objects: {
+    owner: Prisma.$UserPayload<ExtArgs>
     invitees: Prisma.$JobInvitePayload<ExtArgs>[]
     company: Prisma.$CompanyPayload<ExtArgs>
   }
@@ -1159,6 +1306,7 @@ readonly fields: JobFieldRefs;
  */
 export interface Prisma__JobClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   invitees<T extends Prisma.Job$inviteesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$inviteesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   company<T extends Prisma.CompanyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CompanyDefaultArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**

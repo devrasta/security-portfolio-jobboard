@@ -14,11 +14,11 @@ export class CompanyMemberGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const userId = request.user.userId;
     const companyId = request.params.id;
+    console.log('CompanyMemberGuard: userId:', userId, 'companyId:', companyId);
 
     const membership = await this.prisma.companyUser.findUnique({
       where: { userId_companyId: { userId, companyId } },
     });
-
     if (!membership) throw new ForbiddenException();
 
     request.membership = membership;

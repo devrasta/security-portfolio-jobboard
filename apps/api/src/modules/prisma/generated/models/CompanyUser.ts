@@ -28,18 +28,21 @@ export type CompanyUserMinAggregateOutputType = {
   userId: string | null
   companyId: string | null
   role: $Enums.CompanyRole | null
+  joinedAt: Date | null
 }
 
 export type CompanyUserMaxAggregateOutputType = {
   userId: string | null
   companyId: string | null
   role: $Enums.CompanyRole | null
+  joinedAt: Date | null
 }
 
 export type CompanyUserCountAggregateOutputType = {
   userId: number
   companyId: number
   role: number
+  joinedAt: number
   _all: number
 }
 
@@ -48,18 +51,21 @@ export type CompanyUserMinAggregateInputType = {
   userId?: true
   companyId?: true
   role?: true
+  joinedAt?: true
 }
 
 export type CompanyUserMaxAggregateInputType = {
   userId?: true
   companyId?: true
   role?: true
+  joinedAt?: true
 }
 
 export type CompanyUserCountAggregateInputType = {
   userId?: true
   companyId?: true
   role?: true
+  joinedAt?: true
   _all?: true
 }
 
@@ -139,6 +145,7 @@ export type CompanyUserGroupByOutputType = {
   userId: string
   companyId: string
   role: $Enums.CompanyRole
+  joinedAt: Date
   _count: CompanyUserCountAggregateOutputType | null
   _min: CompanyUserMinAggregateOutputType | null
   _max: CompanyUserMaxAggregateOutputType | null
@@ -166,6 +173,7 @@ export type CompanyUserWhereInput = {
   userId?: Prisma.StringFilter<"CompanyUser"> | string
   companyId?: Prisma.StringFilter<"CompanyUser"> | string
   role?: Prisma.EnumCompanyRoleFilter<"CompanyUser"> | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFilter<"CompanyUser"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
 }
@@ -174,6 +182,7 @@ export type CompanyUserOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  joinedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   company?: Prisma.CompanyOrderByWithRelationInput
 }
@@ -186,6 +195,7 @@ export type CompanyUserWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"CompanyUser"> | string
   companyId?: Prisma.StringFilter<"CompanyUser"> | string
   role?: Prisma.EnumCompanyRoleFilter<"CompanyUser"> | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFilter<"CompanyUser"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
 }, "userId_companyId">
@@ -194,6 +204,7 @@ export type CompanyUserOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  joinedAt?: Prisma.SortOrder
   _count?: Prisma.CompanyUserCountOrderByAggregateInput
   _max?: Prisma.CompanyUserMaxOrderByAggregateInput
   _min?: Prisma.CompanyUserMinOrderByAggregateInput
@@ -206,10 +217,12 @@ export type CompanyUserScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"CompanyUser"> | string
   companyId?: Prisma.StringWithAggregatesFilter<"CompanyUser"> | string
   role?: Prisma.EnumCompanyRoleWithAggregatesFilter<"CompanyUser"> | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeWithAggregatesFilter<"CompanyUser"> | Date | string
 }
 
 export type CompanyUserCreateInput = {
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCompanysInput
   company: Prisma.CompanyCreateNestedOneWithoutUsersInput
 }
@@ -218,10 +231,12 @@ export type CompanyUserUncheckedCreateInput = {
   userId: string
   companyId: string
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
 }
 
 export type CompanyUserUpdateInput = {
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCompanysNestedInput
   company?: Prisma.CompanyUpdateOneRequiredWithoutUsersNestedInput
 }
@@ -230,22 +245,26 @@ export type CompanyUserUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CompanyUserCreateManyInput = {
   userId: string
   companyId: string
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
 }
 
 export type CompanyUserUpdateManyMutationInput = {
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CompanyUserUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CompanyUserListRelationFilter = {
@@ -267,18 +286,21 @@ export type CompanyUserCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  joinedAt?: Prisma.SortOrder
 }
 
 export type CompanyUserMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  joinedAt?: Prisma.SortOrder
 }
 
 export type CompanyUserMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  joinedAt?: Prisma.SortOrder
 }
 
 export type CompanyUserCreateNestedManyWithoutUserInput = {
@@ -371,12 +393,14 @@ export type EnumCompanyRoleFieldUpdateOperationsInput = {
 
 export type CompanyUserCreateWithoutUserInput = {
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
   company: Prisma.CompanyCreateNestedOneWithoutUsersInput
 }
 
 export type CompanyUserUncheckedCreateWithoutUserInput = {
   companyId: string
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
 }
 
 export type CompanyUserCreateOrConnectWithoutUserInput = {
@@ -412,16 +436,19 @@ export type CompanyUserScalarWhereInput = {
   userId?: Prisma.StringFilter<"CompanyUser"> | string
   companyId?: Prisma.StringFilter<"CompanyUser"> | string
   role?: Prisma.EnumCompanyRoleFilter<"CompanyUser"> | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFilter<"CompanyUser"> | Date | string
 }
 
 export type CompanyUserCreateWithoutCompanyInput = {
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCompanysInput
 }
 
 export type CompanyUserUncheckedCreateWithoutCompanyInput = {
   userId: string
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
 }
 
 export type CompanyUserCreateOrConnectWithoutCompanyInput = {
@@ -453,41 +480,49 @@ export type CompanyUserUpdateManyWithWhereWithoutCompanyInput = {
 export type CompanyUserCreateManyUserInput = {
   companyId: string
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
 }
 
 export type CompanyUserUpdateWithoutUserInput = {
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneRequiredWithoutUsersNestedInput
 }
 
 export type CompanyUserUncheckedUpdateWithoutUserInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CompanyUserUncheckedUpdateManyWithoutUserInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CompanyUserCreateManyCompanyInput = {
   userId: string
   role: $Enums.CompanyRole
+  joinedAt?: Date | string
 }
 
 export type CompanyUserUpdateWithoutCompanyInput = {
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCompanysNestedInput
 }
 
 export type CompanyUserUncheckedUpdateWithoutCompanyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CompanyUserUncheckedUpdateManyWithoutCompanyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumCompanyRoleFieldUpdateOperationsInput | $Enums.CompanyRole
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -496,6 +531,7 @@ export type CompanyUserSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   userId?: boolean
   companyId?: boolean
   role?: boolean
+  joinedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["companyUser"]>
@@ -504,6 +540,7 @@ export type CompanyUserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   companyId?: boolean
   role?: boolean
+  joinedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["companyUser"]>
@@ -512,6 +549,7 @@ export type CompanyUserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   companyId?: boolean
   role?: boolean
+  joinedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["companyUser"]>
@@ -520,9 +558,10 @@ export type CompanyUserSelectScalar = {
   userId?: boolean
   companyId?: boolean
   role?: boolean
+  joinedAt?: boolean
 }
 
-export type CompanyUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "companyId" | "role", ExtArgs["result"]["companyUser"]>
+export type CompanyUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "companyId" | "role" | "joinedAt", ExtArgs["result"]["companyUser"]>
 export type CompanyUserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
@@ -546,6 +585,7 @@ export type $CompanyUserPayload<ExtArgs extends runtime.Types.Extensions.Interna
     userId: string
     companyId: string
     role: $Enums.CompanyRole
+    joinedAt: Date
   }, ExtArgs["result"]["companyUser"]>
   composites: {}
 }
@@ -974,6 +1014,7 @@ export interface CompanyUserFieldRefs {
   readonly userId: Prisma.FieldRef<"CompanyUser", 'String'>
   readonly companyId: Prisma.FieldRef<"CompanyUser", 'String'>
   readonly role: Prisma.FieldRef<"CompanyUser", 'CompanyRole'>
+  readonly joinedAt: Prisma.FieldRef<"CompanyUser", 'DateTime'>
 }
     
 

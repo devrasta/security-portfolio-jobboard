@@ -1,29 +1,36 @@
-import { Controller, Post, Patch, Delete, Get, Req } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { MembersService } from './members.service';
-import { PrismaService } from '../prisma/prisma.service';
 import { Implement, implement } from '@orpc/nest';
+import { contract } from '@repo/contracts';
+import { JwtAuthGuard } from '../security/guards/jwt-auth.guard';
+import { CompanyMemberGuard } from '../../common/guards/company-member.guard';
+import type { Request } from 'express';
 
 @Controller('company')
 export class MembersController {
-  constructor(
-    private readonly membersService: MembersService,
-    private readonly prismaService: PrismaService,
-  ) {}
-  //   POST   /tenants/:id/members          → inviter un membre (OWNER/ADMIN)
+  constructor(private readonly membersService: MembersService) {}
+
+  @UseGuards(JwtAuthGuard, CompanyMemberGuard)
+  @Post(':id/members')
+  @Implement(contract.company.inviteMember)
+  async inviteMember(@Req() req: Request) {
+    return implement(contract.company.inviteMember).handler(({ input }) => {
+      const { id: companyId, email } = input;
+      const role = req.membership?.role;
+      if (role !== 'OWNER' && role !== 'ADMIN') {
+        throw new ForbiddenException();
+      }
+      return this.membersService.inviteMember(companyId, email);
+    });
+  }
+
   // PATCH  /tenants/:id/members/:userId  → changer le rôle (OWNER seulement)
   // DELETE /tenants/:id/members/:userId  → retirer un membre (OWNER/ADMIN)
   // GET    /tenants/:id/members          → lister les membres
-
-  @Post(':id/members')
-  async inviteMember() {}
-  // @UseGuards(JwtAuthGuard)
-  //   @Post()
-  //   @Implement(contract.company.create)
-  //   async createCompany(@Req() req: Request) {
-  //     return implement(contract.company.create).handler(({ input }) => {
-  //       const { name, users } = input;
-  //       const userId = req.user.userId;
-  //       return this.companyService.createCompany(name, userId, users);
-  //     });
-  //   }
 }

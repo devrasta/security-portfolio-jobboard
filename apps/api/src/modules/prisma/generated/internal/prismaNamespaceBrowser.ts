@@ -57,6 +57,7 @@ export const ModelName = {
   TwoFactorSecret: 'TwoFactorSecret',
   Company: 'Company',
   CompanyUser: 'CompanyUser',
+  CompanyInvite: 'CompanyInvite',
   Job: 'Job',
   JobInvite: 'JobInvite',
   AuditLog: 'AuditLog'
@@ -152,10 +153,26 @@ export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeo
 export const CompanyUserScalarFieldEnum = {
   userId: 'userId',
   companyId: 'companyId',
-  role: 'role'
+  role: 'role',
+  joinedAt: 'joinedAt'
 } as const
 
 export type CompanyUserScalarFieldEnum = (typeof CompanyUserScalarFieldEnum)[keyof typeof CompanyUserScalarFieldEnum]
+
+
+export const CompanyInviteScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  email: 'email',
+  role: 'role',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  companyId: 'companyId',
+  invitedById: 'invitedById'
+} as const
+
+export type CompanyInviteScalarFieldEnum = (typeof CompanyInviteScalarFieldEnum)[keyof typeof CompanyInviteScalarFieldEnum]
 
 
 export const JobScalarFieldEnum = {

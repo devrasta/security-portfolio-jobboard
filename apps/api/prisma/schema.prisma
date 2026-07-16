@@ -21,10 +21,11 @@ model User {
   auditLogs    AuditLog[]
   refreshTokens RefreshToken[]
   activityLogs  ActivityLog[]
-
+  companyInvitesSent CompanyInvite[] @relation("InvitedBy") 
   twoFactorSecret TwoFactorSecret?
 
   @@map("users")
+  jobs Job[]
 }
 
 model RefreshToken {
@@ -100,6 +101,7 @@ model Company {
   slug      String   @unique
   users     CompanyUser[]
   jobs      Job[]
+  invites   CompanyInvite[] 
   createdAt DateTime @default(now())
 }
 
@@ -110,6 +112,7 @@ model CompanyUser {
   role     CompanyRole
   user     User   @relation(fields: [userId], references: [id])
   company   Company @relation(fields: [companyId], references: [id])
+  joinedAt DateTime @default(now())
 
   @@id([userId, companyId])
 }
@@ -120,6 +123,33 @@ enum CompanyRole {
   MEMBER
 }
 
+model CompanyInvite {
+  id          String              @id @default(uuid())
+  token       String              @unique
+  email       String
+  role        CompanyRole         @default(MEMBER)
+  status      CompanyInviteStatus @default(PENDING)
+  expiresAt   DateTime
+  createdAt   DateTime            @default(now())
+
+  companyId   String
+  company     Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  invitedById String
+  invitedBy   User    @relation("InvitedBy", fields: [invitedById], references: [id])
+
+  @@index([token])
+  @@index([email])
+  @@index([companyId])
+  @@map("company_invites")
+}
+
+enum CompanyInviteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
 model Job {
   id          String    @id @default(uuid())
   companyId    String
@@ -127,6 +157,7 @@ model Job {
   description String
   status      JobStatus
   ownerId     String
+  owner User @relation(fields: [ownerId], references: [id])
   shareToken  String?   @unique // ABAC : accès par lien
   invitees    JobInvite[]
   company      Company    @relation(fields: [companyId], references: [id])

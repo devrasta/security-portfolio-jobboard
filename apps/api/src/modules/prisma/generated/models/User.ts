@@ -210,7 +210,9 @@ export type UserWhereInput = {
   auditLogs?: Prisma.AuditLogListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
+  companyInvitesSent?: Prisma.CompanyInviteListRelationFilter
   twoFactorSecret?: Prisma.XOR<Prisma.TwoFactorSecretNullableScalarRelationFilter, Prisma.TwoFactorSecretWhereInput> | null
+  jobs?: Prisma.JobListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -226,7 +228,9 @@ export type UserOrderByWithRelationInput = {
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
+  companyInvitesSent?: Prisma.CompanyInviteOrderByRelationAggregateInput
   twoFactorSecret?: Prisma.TwoFactorSecretOrderByWithRelationInput
+  jobs?: Prisma.JobOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -245,7 +249,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   auditLogs?: Prisma.AuditLogListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
+  companyInvitesSent?: Prisma.CompanyInviteListRelationFilter
   twoFactorSecret?: Prisma.XOR<Prisma.TwoFactorSecretNullableScalarRelationFilter, Prisma.TwoFactorSecretWhereInput> | null
+  jobs?: Prisma.JobListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -289,7 +295,9 @@ export type UserCreateInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -305,7 +313,9 @@ export type UserUncheckedCreateInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUpdateInput = {
@@ -321,7 +331,9 @@ export type UserUpdateInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -337,7 +349,9 @@ export type UserUncheckedUpdateInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -490,6 +504,34 @@ export type UserUpdateOneRequiredWithoutCompanysNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCompanysInput, Prisma.UserUpdateWithoutCompanysInput>, Prisma.UserUncheckedUpdateWithoutCompanysInput>
 }
 
+export type UserCreateNestedOneWithoutCompanyInvitesSentInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCompanyInvitesSentInput, Prisma.UserUncheckedCreateWithoutCompanyInvitesSentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompanyInvitesSentInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCompanyInvitesSentNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCompanyInvitesSentInput, Prisma.UserUncheckedCreateWithoutCompanyInvitesSentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompanyInvitesSentInput
+  upsert?: Prisma.UserUpsertWithoutCompanyInvitesSentInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCompanyInvitesSentInput, Prisma.UserUpdateWithoutCompanyInvitesSentInput>, Prisma.UserUncheckedUpdateWithoutCompanyInvitesSentInput>
+}
+
+export type UserCreateNestedOneWithoutJobsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutJobsInput, Prisma.UserUncheckedCreateWithoutJobsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutJobsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutJobsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutJobsInput, Prisma.UserUncheckedCreateWithoutJobsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutJobsInput
+  upsert?: Prisma.UserUpsertWithoutJobsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutJobsInput, Prisma.UserUpdateWithoutJobsInput>, Prisma.UserUncheckedUpdateWithoutJobsInput>
+}
+
 export type UserCreateNestedOneWithoutAuditLogsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditLogsInput
@@ -516,7 +558,9 @@ export type UserCreateWithoutRefreshTokensInput = {
   companys?: Prisma.CompanyUserCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -531,7 +575,9 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   companys?: Prisma.CompanyUserUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -562,7 +608,9 @@ export type UserUpdateWithoutRefreshTokensInput = {
   companys?: Prisma.CompanyUserUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -577,7 +625,9 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   companys?: Prisma.CompanyUserUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutActivityLogsInput = {
@@ -592,7 +642,9 @@ export type UserCreateWithoutActivityLogsInput = {
   companys?: Prisma.CompanyUserCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutActivityLogsInput = {
@@ -607,7 +659,9 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   companys?: Prisma.CompanyUserUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutActivityLogsInput = {
@@ -638,7 +692,9 @@ export type UserUpdateWithoutActivityLogsInput = {
   companys?: Prisma.CompanyUserUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivityLogsInput = {
@@ -653,7 +709,9 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   companys?: Prisma.CompanyUserUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutTwoFactorSecretInput = {
@@ -669,6 +727,8 @@ export type UserCreateWithoutTwoFactorSecretInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteCreateNestedManyWithoutInvitedByInput
+  jobs?: Prisma.JobCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutTwoFactorSecretInput = {
@@ -684,6 +744,8 @@ export type UserUncheckedCreateWithoutTwoFactorSecretInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutTwoFactorSecretInput = {
@@ -715,6 +777,8 @@ export type UserUpdateWithoutTwoFactorSecretInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUpdateManyWithoutInvitedByNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTwoFactorSecretInput = {
@@ -730,6 +794,8 @@ export type UserUncheckedUpdateWithoutTwoFactorSecretInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutCompanysInput = {
@@ -744,7 +810,9 @@ export type UserCreateWithoutCompanysInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutCompanysInput = {
@@ -759,7 +827,9 @@ export type UserUncheckedCreateWithoutCompanysInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutCompanysInput = {
@@ -790,7 +860,9 @@ export type UserUpdateWithoutCompanysInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCompanysInput = {
@@ -805,6 +877,176 @@ export type UserUncheckedUpdateWithoutCompanysInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  twoFactorSecret?: Prisma.TwoFactorSecretUncheckedUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserCreateWithoutCompanyInvitesSentInput = {
+  id?: string
+  email: string
+  password: string
+  name?: string | null
+  emailVerificationToken?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companys?: Prisma.CompanyUserCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  twoFactorSecret?: Prisma.TwoFactorSecretCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutCompanyInvitesSentInput = {
+  id?: string
+  email: string
+  password: string
+  name?: string | null
+  emailVerificationToken?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companys?: Prisma.CompanyUserUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  twoFactorSecret?: Prisma.TwoFactorSecretUncheckedCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutCompanyInvitesSentInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCompanyInvitesSentInput, Prisma.UserUncheckedCreateWithoutCompanyInvitesSentInput>
+}
+
+export type UserUpsertWithoutCompanyInvitesSentInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCompanyInvitesSentInput, Prisma.UserUncheckedUpdateWithoutCompanyInvitesSentInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCompanyInvitesSentInput, Prisma.UserUncheckedCreateWithoutCompanyInvitesSentInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCompanyInvitesSentInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCompanyInvitesSentInput, Prisma.UserUncheckedUpdateWithoutCompanyInvitesSentInput>
+}
+
+export type UserUpdateWithoutCompanyInvitesSentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerificationToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companys?: Prisma.CompanyUserUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  twoFactorSecret?: Prisma.TwoFactorSecretUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCompanyInvitesSentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerificationToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companys?: Prisma.CompanyUserUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  twoFactorSecret?: Prisma.TwoFactorSecretUncheckedUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserCreateWithoutJobsInput = {
+  id?: string
+  email: string
+  password: string
+  name?: string | null
+  emailVerificationToken?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companys?: Prisma.CompanyUserCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteCreateNestedManyWithoutInvitedByInput
+  twoFactorSecret?: Prisma.TwoFactorSecretCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutJobsInput = {
+  id?: string
+  email: string
+  password: string
+  name?: string | null
+  emailVerificationToken?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  companys?: Prisma.CompanyUserUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  twoFactorSecret?: Prisma.TwoFactorSecretUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutJobsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutJobsInput, Prisma.UserUncheckedCreateWithoutJobsInput>
+}
+
+export type UserUpsertWithoutJobsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutJobsInput, Prisma.UserUncheckedUpdateWithoutJobsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutJobsInput, Prisma.UserUncheckedCreateWithoutJobsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutJobsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutJobsInput, Prisma.UserUncheckedUpdateWithoutJobsInput>
+}
+
+export type UserUpdateWithoutJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerificationToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companys?: Prisma.CompanyUserUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUpdateManyWithoutInvitedByNestedInput
+  twoFactorSecret?: Prisma.TwoFactorSecretUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerificationToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companys?: Prisma.CompanyUserUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -820,7 +1062,9 @@ export type UserCreateWithoutAuditLogsInput = {
   companys?: Prisma.CompanyUserCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -835,7 +1079,9 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   companys?: Prisma.CompanyUserUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedCreateNestedManyWithoutInvitedByInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedCreateNestedOneWithoutUserInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -866,7 +1112,9 @@ export type UserUpdateWithoutAuditLogsInput = {
   companys?: Prisma.CompanyUserUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -881,7 +1129,9 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   companys?: Prisma.CompanyUserUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  companyInvitesSent?: Prisma.CompanyInviteUncheckedUpdateManyWithoutInvitedByNestedInput
   twoFactorSecret?: Prisma.TwoFactorSecretUncheckedUpdateOneWithoutUserNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 
@@ -894,6 +1144,8 @@ export type UserCountOutputType = {
   auditLogs: number
   refreshTokens: number
   activityLogs: number
+  companyInvitesSent: number
+  jobs: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -901,6 +1153,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
   activityLogs?: boolean | UserCountOutputTypeCountActivityLogsArgs
+  companyInvitesSent?: boolean | UserCountOutputTypeCountCompanyInvitesSentArgs
+  jobs?: boolean | UserCountOutputTypeCountJobsArgs
 }
 
 /**
@@ -941,6 +1195,20 @@ export type UserCountOutputTypeCountActivityLogsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.ActivityLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCompanyInvitesSentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CompanyInviteWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -955,7 +1223,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
+  companyInvitesSent?: boolean | Prisma.User$companyInvitesSentArgs<ExtArgs>
   twoFactorSecret?: boolean | Prisma.User$twoFactorSecretArgs<ExtArgs>
+  jobs?: boolean | Prisma.User$jobsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -998,7 +1268,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
+  companyInvitesSent?: boolean | Prisma.User$companyInvitesSentArgs<ExtArgs>
   twoFactorSecret?: boolean | Prisma.User$twoFactorSecretArgs<ExtArgs>
+  jobs?: boolean | Prisma.User$jobsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1011,7 +1283,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
+    companyInvitesSent: Prisma.$CompanyInvitePayload<ExtArgs>[]
     twoFactorSecret: Prisma.$TwoFactorSecretPayload<ExtArgs> | null
+    jobs: Prisma.$JobPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1420,7 +1694,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityLogs<T extends Prisma.User$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  companyInvitesSent<T extends Prisma.User$companyInvitesSentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$companyInvitesSentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   twoFactorSecret<T extends Prisma.User$twoFactorSecretArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$twoFactorSecretArgs<ExtArgs>>): Prisma.Prisma__TwoFactorSecretClient<runtime.Types.Result.GetResult<Prisma.$TwoFactorSecretPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  jobs<T extends Prisma.User$jobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1947,6 +2223,30 @@ export type User$activityLogsArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * User.companyInvitesSent
+ */
+export type User$companyInvitesSentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanyInvite
+   */
+  select?: Prisma.CompanyInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CompanyInvite
+   */
+  omit?: Prisma.CompanyInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanyInviteInclude<ExtArgs> | null
+  where?: Prisma.CompanyInviteWhereInput
+  orderBy?: Prisma.CompanyInviteOrderByWithRelationInput | Prisma.CompanyInviteOrderByWithRelationInput[]
+  cursor?: Prisma.CompanyInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CompanyInviteScalarFieldEnum | Prisma.CompanyInviteScalarFieldEnum[]
+}
+
+/**
  * User.twoFactorSecret
  */
 export type User$twoFactorSecretArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1963,6 +2263,30 @@ export type User$twoFactorSecretArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   include?: Prisma.TwoFactorSecretInclude<ExtArgs> | null
   where?: Prisma.TwoFactorSecretWhereInput
+}
+
+/**
+ * User.jobs
+ */
+export type User$jobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Job
+   */
+  select?: Prisma.JobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Job
+   */
+  omit?: Prisma.JobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobInclude<ExtArgs> | null
+  where?: Prisma.JobWhereInput
+  orderBy?: Prisma.JobOrderByWithRelationInput | Prisma.JobOrderByWithRelationInput[]
+  cursor?: Prisma.JobWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobScalarFieldEnum | Prisma.JobScalarFieldEnum[]
 }
 
 /**

@@ -41,6 +41,16 @@ export const CompanyRole = {
 export type CompanyRole = (typeof CompanyRole)[keyof typeof CompanyRole]
 
 
+export const CompanyInviteStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type CompanyInviteStatus = (typeof CompanyInviteStatus)[keyof typeof CompanyInviteStatus]
+
+
 export const JobStatus = {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',

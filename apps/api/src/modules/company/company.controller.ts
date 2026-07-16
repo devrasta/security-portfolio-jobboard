@@ -22,7 +22,7 @@ export class CompanyController {
   }
 
   @Get(':id')
-  @UseGuards(CompanyMemberGuard)
+  @UseGuards(JwtAuthGuard, CompanyMemberGuard)
   @Implement(contract.company.get)
   async getCompany() {
     return implement(contract.company.get).handler(({ input }) => {
@@ -32,6 +32,7 @@ export class CompanyController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, CompanyMemberGuard)
   @Implement(contract.company.delete)
   async deleteCompany() {
     return implement(contract.company.delete).handler(({ input }) => {

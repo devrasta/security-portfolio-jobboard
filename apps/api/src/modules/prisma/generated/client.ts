@@ -70,6 +70,11 @@ export type Company = Prisma.CompanyModel
  */
 export type CompanyUser = Prisma.CompanyUserModel
 /**
+ * Model CompanyInvite
+ * 
+ */
+export type CompanyInvite = Prisma.CompanyInviteModel
+/**
  * Model Job
  * 
  */

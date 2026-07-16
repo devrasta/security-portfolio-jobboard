@@ -65,12 +65,12 @@ export const createCompanyContract = oc
   const inviteMemberContract = oc
     .route({
       method: "POST",
-      path: "/tenants/:id/members",
+      path: "/company/:id/members",
     })
     .input(
       z.object({
         id: z.uuid(),
-        userId: z.uuid(),
+        email: z.email(),
       }),
     )
     .output(z.string());
@@ -78,7 +78,7 @@ export const createCompanyContract = oc
   const changeMemberRoleContract = oc
     .route({
       method: "PATCH",
-      path: "/tenants/:id/members/:userId",
+      path: "/company/:id/members/:userId",
     })
     .input(
       z.object({
@@ -92,7 +92,7 @@ export const createCompanyContract = oc
   const removeMemberContract = oc
     .route({
       method: "DELETE",
-      path: "/tenants/:id/members/:userId",
+      path: "/company/:id/members/:userId",
     })
     .input(
       z.object({
@@ -105,7 +105,7 @@ export const createCompanyContract = oc
   const listMembersContract = oc
     .route({
       method: "GET",
-      path: "/tenants/:id/members",
+      path: "/company/:id/members",
     })
     .input(
       z.object({

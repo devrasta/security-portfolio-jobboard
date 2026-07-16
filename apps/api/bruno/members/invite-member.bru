@@ -1,0 +1,44 @@
+meta {
+  name: Invite Member
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/company/:id/members
+  body: json
+  auth: bearer
+}
+
+params:path {
+  id: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "email": "replace-with-invitee-email"
+  }
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard: the caller must already be a
+  member of the company (:id) in the path.
+
+  Contract input is { id, email } — id comes from the :id path param,
+  email is the only field to send in the body.
+
+  Service is currently a stub: it does not persist an invitation, generate
+  a token, or send an email yet — it just returns a confirmation string.
+
+  Remaining endpoints from MembersController are not implemented yet
+  (commented out as TODO in the controller): change member role (PATCH),
+  remove member (DELETE), list members (GET).
+}

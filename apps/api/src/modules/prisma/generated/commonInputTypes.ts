@@ -199,6 +199,23 @@ export type EnumCompanyRoleWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumCompanyRoleFilter<$PrismaModel>
 }
 
+export type EnumCompanyInviteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CompanyInviteStatus | Prisma.EnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CompanyInviteStatus[] | Prisma.ListEnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CompanyInviteStatus[] | Prisma.ListEnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCompanyInviteStatusFilter<$PrismaModel> | $Enums.CompanyInviteStatus
+}
+
+export type EnumCompanyInviteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CompanyInviteStatus | Prisma.EnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CompanyInviteStatus[] | Prisma.ListEnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CompanyInviteStatus[] | Prisma.ListEnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCompanyInviteStatusWithAggregatesFilter<$PrismaModel> | $Enums.CompanyInviteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCompanyInviteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCompanyInviteStatusFilter<$PrismaModel>
+}
+
 export type EnumJobStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.JobStatus | Prisma.EnumJobStatusFieldRefInput<$PrismaModel>
   in?: $Enums.JobStatus[] | Prisma.ListEnumJobStatusFieldRefInput<$PrismaModel>
@@ -463,6 +480,23 @@ export type NestedEnumCompanyRoleWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCompanyRoleFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCompanyRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumCompanyInviteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CompanyInviteStatus | Prisma.EnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CompanyInviteStatus[] | Prisma.ListEnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CompanyInviteStatus[] | Prisma.ListEnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCompanyInviteStatusFilter<$PrismaModel> | $Enums.CompanyInviteStatus
+}
+
+export type NestedEnumCompanyInviteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CompanyInviteStatus | Prisma.EnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CompanyInviteStatus[] | Prisma.ListEnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CompanyInviteStatus[] | Prisma.ListEnumCompanyInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCompanyInviteStatusWithAggregatesFilter<$PrismaModel> | $Enums.CompanyInviteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCompanyInviteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCompanyInviteStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumJobStatusFilter<$PrismaModel = never> = {
