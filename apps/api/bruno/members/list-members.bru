@@ -1,0 +1,27 @@
+meta {
+  name: List Members
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/companies/:companyId/members
+  body: none
+  auth: bearer
+}
+
+params:path {
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard: the caller must already be a
+  member of the company (:companyId) in the path. No specific role required.
+
+  Returns the members of the company as an array of
+  { userId, email, role } where role is OWNER | ADMIN | MEMBER.
+}

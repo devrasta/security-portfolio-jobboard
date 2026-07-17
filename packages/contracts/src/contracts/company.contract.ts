@@ -4,7 +4,7 @@ import * as z from "zod";
 export const createCompanyContract = oc
   .route({
     method: "POST",
-    path: "/company",
+    path: "/companies",
   })
   .input(
     z.object({
@@ -22,54 +22,71 @@ export const createCompanyContract = oc
   .output(z.string());
 
   const getCompanyContract = oc
-  .route({
-    method: "GET",
-    path: "/company/:id",
-  })
-  .input(
-    z.object({
-      id: z.string().uuid(),
-    }),
-  )
-  .output(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      slug: z.string(),
-      createdAt: z.coerce.date(),
-      users: z.array(
-        z.object({
-          role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
-          user: z.object({
-            id: z.string(),
-            name: z.string().nullable(),
-            email: z.string(),
+    .route({
+      method: "GET",
+      path: "/companies/:companyId",
+    })
+    .input(
+      z.object({
+        companyId: z.string().uuid(),
+      }),
+    )
+    .output(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        slug: z.string(),
+        createdAt: z.coerce.date(),
+        users: z.array(
+          z.object({
+            role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
+            user: z.object({
+              id: z.string(),
+              name: z.string().nullable(),
+              email: z.string(),
+            }),
           }),
+        ),
+      }),
+    );
+
+  const listCompaniesContract = oc
+    .route({
+      method: "GET",
+      path: "/companies",
+    })
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+          slug: z.string(),
+          role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
+          createdAt: z.coerce.date(),
         }),
       ),
-    }),
-  );
+    );
 
   const deleteCompanyContract = oc
-  .route({
-    method: "DELETE",
-    path: "/company/:id",
-  })
-  .input(
-    z.object({
-      id: z.uuid(),
-    }),
-  )
-  .output(z.string());
+    .route({
+      method: "DELETE",
+      path: "/companies/:companyId",
+    })
+    .input(
+      z.object({
+        companyId: z.uuid(),
+      }),
+    )
+    .output(z.string());
 
   const inviteMemberContract = oc
     .route({
       method: "POST",
-      path: "/company/:id/members",
+      path: "/companies/:companyId/members/invite",
     })
     .input(
       z.object({
-        id: z.uuid(),
+        companyId: z.uuid(),
         email: z.email(),
         role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
       }),
@@ -79,11 +96,11 @@ export const createCompanyContract = oc
   const changeMemberRoleContract = oc
     .route({
       method: "PATCH",
-      path: "/company/:id/members/:userId",
+      path: "/companies/:companyId/members/:userId",
     })
     .input(
       z.object({
-        id: z.uuid(),
+        companyId: z.uuid(),
         userId: z.uuid(),
         role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
       }),
@@ -93,11 +110,11 @@ export const createCompanyContract = oc
   const removeMemberContract = oc
     .route({
       method: "DELETE",
-      path: "/company/:id/members/:userId",
+      path: "/companies/:companyId/members/:userId",
     })
     .input(
       z.object({
-        id: z.uuid(),
+        companyId: z.uuid(),
         userId: z.uuid(),
       }),
     )
@@ -106,18 +123,27 @@ export const createCompanyContract = oc
   const listMembersContract = oc
     .route({
       method: "GET",
-      path: "/company/:id/members",
+      path: "/companies/:companyId/members",
     })
     .input(
       z.object({
-        id: z.uuid(),
+        companyId: z.uuid(),
       }),
     )
-    .output(z.string());
+    .output(
+      z.array(
+        z.object({
+          userId: z.string(),
+          email: z.string(),
+          role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
+        }),
+      ),
+    );
 
 export const CompanyContract = {
   create: createCompanyContract,
   get: getCompanyContract,
+  list: listCompaniesContract,
   delete: deleteCompanyContract,
   inviteMember: inviteMemberContract,
   changeMemberRole: changeMemberRoleContract,

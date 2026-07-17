@@ -1,0 +1,23 @@
+meta {
+  name: List My Companies
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/companies
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  Requires JwtAuthGuard. Returns the companies the authenticated user is a
+  member of, as an array of { id, name, slug, role, createdAt } where role
+  (OWNER | ADMIN | MEMBER) is the caller's role in that company.
+
+  Sorted by company name (ascending).
+}

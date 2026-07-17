@@ -5,6 +5,12 @@ import { TokenService } from '../security/token.service';
 import { CompanyRole } from '../prisma/generated/enums';
 import { MailService } from '../mail/mail.service';
 
+export interface ICompanyMember {
+  userId: string;
+  email: string;
+  role: CompanyRole;
+}
+
 @Injectable()
 export class MembersService {
   constructor(
@@ -55,5 +61,53 @@ export class MembersService {
     // Si elle a déjà un compte → elle est directement rattachée au tenant avec le rôle défini à l'invitation
     // Le token passe en ACCEPTED et ne peut plus être réutilisé
     return `User ${userEmail} invited to company ${companyId}`;
+  }
+
+  async changeMemberRole(
+    companyId: string,
+    userId: string,
+    newRole: CompanyRole,
+  ): Promise<string> {
+    const membership = await this.prismaService.companyUser.findUnique({
+      where: { userId_companyId: { userId, companyId } },
+    });
+    if (!membership) {
+      throw new NotFoundException('Membership not found');
+    }
+
+    await this.prismaService.companyUser.update({
+      where: { userId_companyId: { userId, companyId } },
+      data: { role: newRole },
+    });
+
+    return `User ${userId} role changed to ${newRole} in company ${companyId}`;
+  }
+
+  async removeMember(companyId: string, userId: string): Promise<string> {
+    const membership = await this.prismaService.companyUser.findUnique({
+      where: { userId_companyId: { userId, companyId } },
+    });
+    if (!membership) {
+      throw new NotFoundException('Membership not found');
+    }
+
+    await this.prismaService.companyUser.delete({
+      where: { userId_companyId: { userId, companyId } },
+    });
+
+    return `User ${userId} removed from company ${companyId}`;
+  }
+
+  async listMembers(companyId: string): Promise<ICompanyMember[]> {
+    const members = await this.prismaService.companyUser.findMany({
+      where: { companyId },
+      include: { user: true },
+    });
+
+    return members.map((member) => ({
+      userId: member.user.id,
+      email: member.user.email,
+      role: member.role,
+    }));
   }
 }

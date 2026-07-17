@@ -1,0 +1,30 @@
+meta {
+  name: Remove Member
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/companies/:companyId/members/:userId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+  userId: replace-with-member-user-id
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard, and the caller must have the
+  OWNER role in the company (@RequiredRole('OWNER')).
+
+  Removes the membership (CompanyUser row) linking :userId to :companyId.
+
+  Returns 404 if the target user is not a member of the company.
+  Returns a confirmation string on success.
+}

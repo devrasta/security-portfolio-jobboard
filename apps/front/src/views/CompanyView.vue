@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { companyApi } from '@/lib/endpoints'
 import { ApiError } from '@/lib/api'
 import { COMPANY_ROLES } from '@/types/api'
-import type { Company, CompanyRole } from '@/types/api'
+import type { Company, CompanyMemberSummary, CompanyRole, CompanySummary } from '@/types/api'
 
 function errorMessage(err: unknown, fallback: string) {
   return err instanceof ApiError ? err.message : fallback
@@ -24,6 +24,7 @@ async function handleCreate() {
   try {
     createSuccess.value = await companyApi.create({ name: newCompanyName.value })
     newCompanyName.value = ''
+    await loadCompanies()
   } catch (err) {
     createError.value = errorMessage(err, "Création de l'entreprise impossible")
   } finally {
@@ -31,21 +32,41 @@ async function handleCreate() {
   }
 }
 
+// --- Mes entreprises -------------------------------------------------------
+// La liste vient de GET /companies (contract list) : les entreprises dont
+// le user connecté est membre, avec son rôle.
+const myCompanies = ref<CompanySummary[]>([])
+const companiesError = ref('')
+const companiesLoading = ref(false)
+
+async function loadCompanies() {
+  companiesError.value = ''
+  companiesLoading.value = true
+  try {
+    myCompanies.value = await companyApi.list()
+  } catch (err) {
+    companiesError.value = errorMessage(err, 'Chargement des entreprises impossible')
+  } finally {
+    companiesLoading.value = false
+  }
+}
+
+onMounted(loadCompanies)
+
 // --- Consultation / suppression -------------------------------------------
-// L'API ne renvoie pas l'id à la création et n'expose pas de liste :
-// on charge une entreprise par son identifiant (UUID).
-const companyId = ref('')
 const company = ref<Company | null>(null)
 const lookupError = ref('')
 const lookupLoading = ref(false)
 
-async function handleLookup() {
+async function handleSelect(id: string) {
   lookupError.value = ''
   lookupLoading.value = true
   try {
-    company.value = await companyApi.get(companyId.value.trim())
+    company.value = await companyApi.get(id)
+    await loadMembers()
   } catch (err) {
     company.value = null
+    members.value = []
     lookupError.value = errorMessage(err, 'Entreprise introuvable')
   } finally {
     lookupLoading.value = false
@@ -59,9 +80,57 @@ async function handleDelete() {
   try {
     await companyApi.remove(company.value.id)
     company.value = null
-    companyId.value = ''
+    members.value = []
+    await loadCompanies()
   } catch (err) {
     lookupError.value = errorMessage(err, 'Suppression impossible')
+  }
+}
+
+// --- Gestion des membres ---------------------------------------------------
+// La liste vient de GET /companies/:id/members (contract listMembers).
+const members = ref<CompanyMemberSummary[]>([])
+const membersLoading = ref(false)
+const memberError = ref('')
+const memberSuccess = ref('')
+
+async function loadMembers() {
+  if (!company.value) return
+  membersLoading.value = true
+  try {
+    members.value = await companyApi.listMembers(company.value.id)
+  } catch (err) {
+    members.value = []
+    memberError.value = errorMessage(err, 'Chargement des membres impossible')
+  } finally {
+    membersLoading.value = false
+  }
+}
+
+async function handleChangeRole(userId: string, event: Event) {
+  if (!company.value) return
+  const role = (event.target as HTMLSelectElement).value as CompanyRole
+  memberError.value = ''
+  memberSuccess.value = ''
+  try {
+    memberSuccess.value = await companyApi.changeMemberRole(company.value.id, userId, role)
+  } catch (err) {
+    memberError.value = errorMessage(err, 'Changement de rôle impossible')
+  } finally {
+    await loadMembers()
+  }
+}
+
+async function handleRemoveMember(userId: string, label: string) {
+  if (!company.value) return
+  if (!window.confirm(`Retirer « ${label} » de l'entreprise ?`)) return
+  memberError.value = ''
+  memberSuccess.value = ''
+  try {
+    memberSuccess.value = await companyApi.removeMember(company.value.id, userId)
+    await loadMembers()
+  } catch (err) {
+    memberError.value = errorMessage(err, 'Retrait du membre impossible')
   }
 }
 
@@ -122,28 +191,32 @@ async function handleInvite() {
       </form>
     </section>
 
-    <!-- Consultation -->
+    <!-- Mes entreprises -->
     <section class="rounded-lg border border-border bg-card p-6">
-      <h2 class="mb-4 text-lg font-medium">Consulter une entreprise</h2>
+      <h2 class="mb-4 text-lg font-medium">Mes entreprises</h2>
+      <p v-if="companiesError" class="mb-3 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        {{ companiesError }}
+      </p>
       <p v-if="lookupError" class="mb-3 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
         {{ lookupError }}
       </p>
-      <form class="flex max-w-xl gap-2" @submit.prevent="handleLookup">
-        <input
-          v-model="companyId"
-          type="text"
-          required
-          placeholder="Identifiant de l'entreprise (UUID)"
-          class="flex-1 rounded-md border border-input bg-background px-3 py-2 font-mono text-sm"
-        />
-        <button
-          type="submit"
-          :disabled="lookupLoading"
-          class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
-        >
-          {{ lookupLoading ? 'Chargement…' : 'Charger' }}
-        </button>
-      </form>
+      <p v-if="companiesLoading" class="text-sm text-muted-foreground">Chargement des entreprises…</p>
+      <ul v-else class="divide-y divide-border rounded-md border border-border text-sm">
+        <li v-for="item in myCompanies" :key="item.id">
+          <button
+            class="flex w-full items-center justify-between gap-4 px-4 py-2 text-left hover:bg-muted/50"
+            :class="{ 'bg-muted/50': company?.id === item.id }"
+            :disabled="lookupLoading"
+            @click="handleSelect(item.id)"
+          >
+            <span class="font-medium">{{ item.name }}</span>
+            <span class="text-muted-foreground">{{ item.slug }} · {{ item.role }}</span>
+          </button>
+        </li>
+        <li v-if="myCompanies.length === 0" class="px-4 py-2 text-muted-foreground">
+          Aucune entreprise
+        </li>
+      </ul>
 
       <div v-if="company" class="mt-6 space-y-6">
         <div class="flex items-start justify-between gap-4">
@@ -163,15 +236,37 @@ async function handleInvite() {
 
         <div>
           <h4 class="mb-2 font-medium">Membres</h4>
-          <ul class="divide-y divide-border rounded-md border border-border text-sm">
+          <p v-if="memberError" class="mb-3 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {{ memberError }}
+          </p>
+          <p v-if="memberSuccess" class="mb-3 rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-600">
+            {{ memberSuccess }}
+          </p>
+          <p v-if="membersLoading" class="text-sm text-muted-foreground">Chargement des membres…</p>
+          <ul v-else class="divide-y divide-border rounded-md border border-border text-sm">
             <li
-              v-for="member in company.users"
-              :key="member.user.id"
-              class="flex items-center justify-between px-4 py-2"
+              v-for="member in members"
+              :key="member.userId"
+              class="flex items-center justify-between gap-4 px-4 py-2"
             >
-              <span>{{ member.user.name ?? member.user.email }}</span>
-              <span class="text-muted-foreground">{{ member.user.email }} · {{ member.role }}</span>
+              <span>{{ member.email }}</span>
+              <span class="flex items-center gap-2">
+                <select
+                  :value="member.role"
+                  class="rounded-md border border-input bg-background px-2 py-1 text-sm"
+                  @change="handleChangeRole(member.userId, $event)"
+                >
+                  <option v-for="role in COMPANY_ROLES" :key="role" :value="role">{{ role }}</option>
+                </select>
+                <button
+                  class="rounded-md border border-destructive px-2 py-1 text-sm text-destructive hover:bg-destructive/10"
+                  @click="handleRemoveMember(member.userId, member.email)"
+                >
+                  Retirer
+                </button>
+              </span>
             </li>
+            <li v-if="members.length === 0" class="px-4 py-2 text-muted-foreground">Aucun membre</li>
           </ul>
         </div>
 

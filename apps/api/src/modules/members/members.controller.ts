@@ -1,6 +1,8 @@
 import {
   Controller,
-  ForbiddenException,
+  Delete,
+  Get,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -11,21 +13,19 @@ import { contract } from '@repo/contracts';
 import { JwtAuthGuard } from '../security/guards/jwt-auth.guard';
 import { CompanyMemberGuard } from '../../common/guards/company-member.guard';
 import type { Request } from 'express';
+import { RequiredRole } from '../../common/decorators/required-role.decorator';
 
-@Controller('company')
+@Controller('companies/:companyId/members')
+@UseGuards(JwtAuthGuard, CompanyMemberGuard)
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
 
-  @UseGuards(JwtAuthGuard, CompanyMemberGuard)
-  @Post(':id/members')
-  @Implement(contract.company.inviteMember)
+  @Post('invite')
+  @RequiredRole('ADMIN')
+  @Implement(contract.companies.inviteMember)
   async inviteMember(@Req() req: Request) {
-    return implement(contract.company.inviteMember).handler(({ input }) => {
-      const { id: companyId, email, role } = input;
-      const currentUserRole = req.membership?.role;
-      if (currentUserRole !== 'OWNER' && currentUserRole !== 'ADMIN') {
-        throw new ForbiddenException();
-      }
+    return implement(contract.companies.inviteMember).handler(({ input }) => {
+      const { companyId, email, role } = input;
       const currentUserId = req.user.userId;
       return this.membersService.inviteMember(
         companyId,
@@ -36,7 +36,34 @@ export class MembersController {
     });
   }
 
-  // PATCH  /tenants/:id/members/:userId  → changer le rôle (OWNER seulement)
-  // DELETE /tenants/:id/members/:userId  → retirer un membre (OWNER/ADMIN)
-  // GET    /tenants/:id/members          → lister les membres
+  @Patch(':userId')
+  @RequiredRole('OWNER')
+  @Implement(contract.companies.changeMemberRole)
+  async changeMemberRole() {
+    return implement(contract.companies.changeMemberRole).handler(
+      ({ input }) => {
+        const { companyId, userId, role } = input;
+        return this.membersService.changeMemberRole(companyId, userId, role);
+      },
+    );
+  }
+
+  @Delete(':userId')
+  @RequiredRole('OWNER')
+  @Implement(contract.companies.removeMember)
+  async removeMember() {
+    return implement(contract.companies.removeMember).handler(({ input }) => {
+      const { companyId, userId } = input;
+      return this.membersService.removeMember(companyId, userId);
+    });
+  }
+
+  @Get()
+  @Implement(contract.companies.listMembers)
+  async listMembers() {
+    return implement(contract.companies.listMembers).handler(({ input }) => {
+      const { companyId } = input;
+      return this.membersService.listMembers(companyId);
+    });
+  }
 }

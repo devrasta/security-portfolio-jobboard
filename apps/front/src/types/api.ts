@@ -83,6 +83,21 @@ export interface CompanyMember {
   }
 }
 
+export interface CompanyMemberSummary {
+  userId: string;
+  email: string;
+  role: CompanyRole;
+}
+
+// Shape renvoyée par GET /companies : les entreprises du user avec son rôle
+export interface CompanySummary {
+  id: string
+  name: string
+  slug: string
+  role: CompanyRole
+  createdAt: string
+}
+
 export interface Company {
   id: string
   name: string

@@ -11,7 +11,7 @@ import * as Joi from 'joi';
 import { LoggerModule } from 'nestjs-pino';
 import { minutes, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { CompanyModule } from './modules/company/company.module';
+import { CompaniesModule } from './modules/companies/companies.module';
 import { MembersModule } from './modules/members/members.module';
 import { MailModule } from './modules/mail/mail.module';
 
@@ -88,7 +88,7 @@ import { MailModule } from './modules/mail/mail.module';
     SecurityModule,
     SessionsModule,
     ActivityModule,
-    CompanyModule,
+    CompaniesModule,
     MembersModule,
     MailModule,
   ],

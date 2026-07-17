@@ -2,8 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CompanyRole } from '../prisma/generated/enums';
 
+export interface ICompanySummary {
+  id: string;
+  name: string;
+  slug: string;
+  role: CompanyRole;
+  createdAt: Date;
+}
+
 @Injectable()
-export class CompanyService {
+export class CompaniesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createCompany(name: string, userId: string, users?: { id: string }[]) {
@@ -33,6 +41,22 @@ export class CompanyService {
       console.error('Error creating company:', error);
       throw new Error('Failed to create company');
     }
+  }
+
+  async listCompaniesForUser(userId: string): Promise<ICompanySummary[]> {
+    const memberships = await this.prisma.companyUser.findMany({
+      where: { userId },
+      include: { company: true },
+      orderBy: { company: { name: 'asc' } },
+    });
+
+    return memberships.map((membership) => ({
+      id: membership.company.id,
+      name: membership.company.name,
+      slug: membership.company.slug,
+      role: membership.role,
+      createdAt: membership.company.createdAt,
+    }));
   }
 
   async getCompany(id: string) {

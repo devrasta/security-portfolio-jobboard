@@ -4,7 +4,9 @@ import type {
   ActivityLog,
   ActivityLogList,
   Company,
+  CompanyMemberSummary,
   CompanyRole,
+  CompanySummary,
   SessionList,
   TwoFactorSetup,
   UserProfile,
@@ -36,9 +38,15 @@ export const activityApi = {
 
 export const companyApi = {
   create: (data: { name: string; description?: string; users?: { id: string }[] }) =>
-    apiFetch<string>('/company', { method: 'POST', body: data }),
-  get: (id: string) => apiFetch<Company>(`/company/${id}`),
-  remove: (id: string) => apiFetch<string>(`/company/${id}`, { method: 'DELETE' }),
+    apiFetch<string>('/companies', { method: 'POST', body: data }),
+  get: (id: string) => apiFetch<Company>(`/companies/${id}`),
+  list: () => apiFetch<CompanySummary[]>('/companies'),
+  remove: (id: string) => apiFetch<string>(`/companies/${id}`, { method: 'DELETE' }),
   inviteMember: (id: string, data: { email: string; role: CompanyRole }) =>
-    apiFetch<string>(`/company/${id}/members`, { method: 'POST', body: data }),
+    apiFetch<string>(`/companies/${id}/members/invite`, { method: 'POST', body: data }),
+  listMembers: (id: string) => apiFetch<CompanyMemberSummary[]>(`/companies/${id}/members`),
+  changeMemberRole: (id: string, userId: string, role: CompanyRole) =>
+    apiFetch<string>(`/companies/${id}/members/${userId}`, { method: 'PATCH', body: { role } }),
+  removeMember: (id: string, userId: string) =>
+    apiFetch<string>(`/companies/${id}/members/${userId}`, { method: 'DELETE' }),
 }

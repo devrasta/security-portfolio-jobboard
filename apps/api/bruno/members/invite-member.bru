@@ -5,13 +5,13 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/company/:id/members
+  url: {{baseUrl}}/companies/:companyId/members/invite
   body: json
   auth: bearer
 }
 
 params:path {
-  id: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
 }
 
 headers {
@@ -24,21 +24,24 @@ auth:bearer {
 
 body:json {
   {
-    "email": "replace-with-invitee-email"
+    "email": "replace-with-invitee-email",
+    "role": "MEMBER"
   }
 }
 
 docs {
-  Requires JwtAuthGuard + CompanyMemberGuard: the caller must already be a
-  member of the company (:id) in the path.
+  Requires JwtAuthGuard + CompanyMemberGuard, and the caller must have the
+  ADMIN role (or higher) in the company (@RequiredRole('ADMIN')).
 
-  Contract input is { id, email } — id comes from the :id path param,
-  email is the only field to send in the body.
+  Contract input is { companyId, email, role } — companyId comes from the
+  :companyId path param, email and role (OWNER | ADMIN | MEMBER) are sent
+  in the body.
 
-  Service is currently a stub: it does not persist an invitation, generate
-  a token, or send an email yet — it just returns a confirmation string.
+  Creates a CompanyInvite row (status PENDING, UUID token, 48h TTL) and
+  sends an invitation email containing a link to
+  {FRONTEND_URL}/invitations/accept?token=xxx — local SMTP (port 1025)
+  must be running for the email to go through.
 
-  Remaining endpoints from MembersController are not implemented yet
-  (commented out as TODO in the controller): change member role (PATCH),
-  remove member (DELETE), list members (GET).
+  Returns 404 if the company does not exist, a confirmation string on
+  success.
 }
