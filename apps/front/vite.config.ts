@@ -12,6 +12,10 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  // Port attendu par l'API (CORS_ORIGIN / FRONTEND_URL)
+  server: {
+    port: 5174,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

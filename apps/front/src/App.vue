@@ -1,85 +1,52 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+async function handleLogout() {
+  await auth.logout()
+  await router.push({ name: 'login' })
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="min-h-screen bg-background text-foreground">
+    <header v-if="auth.isAuthenticated" class="border-b border-border bg-card">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+        <nav class="flex items-center gap-1">
+          <RouterLink :to="{ name: 'dashboard' }" class="nav-link">Tableau de bord</RouterLink>
+          <RouterLink :to="{ name: 'activity' }" class="nav-link">Activité</RouterLink>
+          <RouterLink :to="{ name: 'security' }" class="nav-link">Sécurité</RouterLink>
+          <RouterLink :to="{ name: 'company' }" class="nav-link">Entreprise</RouterLink>
+        </nav>
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-muted-foreground">{{ auth.user?.name }}</span>
+          <button
+            class="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted"
+            @click="handleLogout"
+          >
+            Se déconnecter
+          </button>
+        </div>
+      </div>
+    </header>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+    <main class="mx-auto max-w-5xl px-4 py-8">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+@reference "@/assets/main.css";
+
+.nav-link {
+  @apply rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.nav-link.router-link-exact-active {
+  @apply bg-muted font-medium text-foreground;
 }
 </style>

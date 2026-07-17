@@ -67,9 +67,15 @@ export class CompanyService {
 
   async deleteCompany(id: string) {
     try {
-      await this.prisma.company.delete({
-        where: { id },
-      });
+      // Les relations n'ont pas de onDelete: Cascade : on supprime les
+      // dépendances dans la même transaction avant la company.
+      await this.prisma.$transaction([
+        this.prisma.jobInvite.deleteMany({ where: { job: { companyId: id } } }),
+        this.prisma.job.deleteMany({ where: { companyId: id } }),
+        this.prisma.companyInvite.deleteMany({ where: { companyId: id } }),
+        this.prisma.companyUser.deleteMany({ where: { companyId: id } }),
+        this.prisma.company.delete({ where: { id } }),
+      ]);
       return `Company deleted with ID: ${id}`;
     } catch (error) {
       console.error('Error deleting company:', error);

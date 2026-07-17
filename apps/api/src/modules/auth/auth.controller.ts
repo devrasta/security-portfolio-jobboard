@@ -139,7 +139,7 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
     @Req() req: Request,
   ) {
-    const userId = req.user['sub'];
+    const userId = req.user['userId'];
     await this.authService.changePassword({
       userId,
       currentPassword: changePasswordDto.currentPassword,
