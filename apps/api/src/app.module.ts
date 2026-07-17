@@ -13,6 +13,7 @@ import { minutes, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { CompanyModule } from './modules/company/company.module';
 import { MembersModule } from './modules/members/members.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -42,6 +43,13 @@ import { MembersModule } from './modules/members/members.module';
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
+        SMTP_HOST: Joi.string().required(),
+        SMTP_PORT: Joi.number().default(1025),
+        SMTP_SECURE: Joi.boolean().default(false),
+        SMTP_USER: Joi.string().optional(),
+        SMTP_PASSWORD: Joi.string().optional(),
+        SMTP_FROM: Joi.string().required(),
+        FRONTEND_URL: Joi.string().default('http://localhost:5174'),
       }),
     }),
     LoggerModule.forRoot({
@@ -82,6 +90,7 @@ import { MembersModule } from './modules/members/members.module';
     ActivityModule,
     CompanyModule,
     MembersModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],

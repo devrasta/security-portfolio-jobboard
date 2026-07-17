@@ -71,6 +71,7 @@ export const createCompanyContract = oc
       z.object({
         id: z.uuid(),
         email: z.email(),
+        role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
       }),
     )
     .output(z.string());

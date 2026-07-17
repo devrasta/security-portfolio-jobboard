@@ -21,12 +21,18 @@ export class MembersController {
   @Implement(contract.company.inviteMember)
   async inviteMember(@Req() req: Request) {
     return implement(contract.company.inviteMember).handler(({ input }) => {
-      const { id: companyId, email } = input;
-      const role = req.membership?.role;
-      if (role !== 'OWNER' && role !== 'ADMIN') {
+      const { id: companyId, email, role } = input;
+      const currentUserRole = req.membership?.role;
+      if (currentUserRole !== 'OWNER' && currentUserRole !== 'ADMIN') {
         throw new ForbiddenException();
       }
-      return this.membersService.inviteMember(companyId, email);
+      const currentUserId = req.user.userId;
+      return this.membersService.inviteMember(
+        companyId,
+        email,
+        currentUserId,
+        role,
+      );
     });
   }
 
