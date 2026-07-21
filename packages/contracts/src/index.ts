@@ -3,7 +3,7 @@ import { JobContract } from "./contracts/jobContract.js";
 import { CompanyContract } from "./contracts/company.contract.js";
 
 export const contract = populateContractRouterPaths({
-  job: JobContract,
+  jobs: JobContract,
   companies: CompanyContract,
 });
 

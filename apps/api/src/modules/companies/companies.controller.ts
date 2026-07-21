@@ -3,7 +3,7 @@ import { CompaniesService } from './companies.service';
 import { Implement, implement } from '@orpc/nest';
 import { contract } from '@repo/contracts';
 import { JwtAuthGuard } from '../security/guards/jwt-auth.guard';
-import type { Request, Response } from 'express';
+import type { Request } from 'express';
 import { CompanyMemberGuard } from '../../common/guards/company-member.guard';
 
 @Controller('companies')
