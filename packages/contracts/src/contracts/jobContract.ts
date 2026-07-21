@@ -12,6 +12,7 @@ export const createJobContract = oc
       title: z.string().max(200),
       location: z.string().max(200),
       description: z.string().max(1000),
+      status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
     }),
   )
   .output(
@@ -21,6 +22,7 @@ export const createJobContract = oc
       company: z.string(),
       location: z.string(),
       description: z.string(),
+      status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
     }),
   );
 const getJobsContract = oc
@@ -41,6 +43,7 @@ const getJobsContract = oc
         company: z.string(),
         location: z.string(),
         description: z.string(),
+        status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
       }),
     ),
   );
@@ -63,6 +66,7 @@ const getJobContract = oc
       company: z.string(),
       location: z.string(),
       description: z.string(),
+      status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
     }),
   );
 
@@ -79,6 +83,7 @@ const updateJobContract = oc
       location: z.string().max(200).optional(),
       description: z.string().max(1000).optional(),
       ownerId: z.string().optional(),
+      status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
     }),
   )
   .output(
@@ -88,6 +93,7 @@ const updateJobContract = oc
       company: z.string(),
       location: z.string(),
       description: z.string(),
+      status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
     }),
   );
 
@@ -106,10 +112,63 @@ const deleteJobContract = oc
     z.string().describe("Confirmation message that the job has been deleted"),
   );
 
+const generateJobUrlContract = oc
+  .route({
+    method: "POST",
+    path: "/companies/:companyId/jobs/:jobId/share",
+  })
+  .input(
+    z.object({
+      companyId: z.string(),
+      jobId: z.string(),
+    }),
+  )
+  .output(z.url());
+const inviteJobContract = oc
+  .route({
+    method: "POST",
+    path: "/companies/:companyId/jobs/:jobId/invite",
+  })
+  .input(
+    z.object({
+      companyId: z.string(),
+      jobId: z.string(),
+      email: z.email(),
+    }),
+  )
+  .output(
+    z
+      .string()
+      .describe("Confirmation message that the invitation has been sent"),
+  );
+
+const sharedJobContract = oc
+  .route({
+    method: "GET",
+    path: "/jobs/shared/:shareToken",
+  })
+  .input(
+    z.object({
+      shareToken: z.string(),
+    }),
+  )
+  .output(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      company: z.string(),
+      location: z.string(),
+      description: z.string(),
+    }),
+  );
+
 export const JobContract = {
   create: createJobContract,
   get: getJobsContract,
   getById: getJobContract,
   update: updateJobContract,
   delete: deleteJobContract,
+  generateUrl: generateJobUrlContract,
+  invite: inviteJobContract,
+  getSharedJob: sharedJobContract,
 };

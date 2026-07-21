@@ -1296,6 +1296,7 @@ export const JobScalarFieldEnum = {
   status: 'status',
   ownerId: 'ownerId',
   shareToken: 'shareToken',
+  shareTokenExpiresAt: 'shareTokenExpiresAt',
   createdAt: 'createdAt',
   expiresAt: 'expiresAt'
 } as const

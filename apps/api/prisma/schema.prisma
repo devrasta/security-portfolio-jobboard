@@ -162,6 +162,7 @@ model Job {
   shareToken  String?   @unique
   invitees    JobInvite[]
   company      Company    @relation(fields: [companyId], references: [id])
+  shareTokenExpiresAt DateTime?
   createdAt   DateTime  @default(now())
   expiresAt   DateTime?
 }

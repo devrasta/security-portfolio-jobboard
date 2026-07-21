@@ -21,19 +21,19 @@ export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   @Implement(contract.jobs.create)
   async createJob(@Req() req: Request) {
     return implement(contract.jobs.create).handler(({ input }) => {
-      const { companyId, title, location, description } = input;
+      const { companyId, title, location, description, status } = input;
       const currentUserId = req.user.userId;
-      return this.jobsService.createJob(
+      return this.jobsService.createJob({
         companyId,
         title,
         location,
         description,
         currentUserId,
-      );
+        status,
+      });
     });
   }
 
@@ -60,14 +60,15 @@ export class JobsController {
   @Implement(contract.jobs.update)
   async updateJob() {
     return implement(contract.jobs.update).handler(({ input }) => {
-      const { jobId, title, location, description, ownerId } = input;
-      return this.jobsService.updateJob(
+      const { jobId, title, location, description, ownerId, status } = input;
+      return this.jobsService.updateJob({
         jobId,
         title,
         location,
         description,
         ownerId,
-      );
+        status,
+      });
     });
   }
 
@@ -78,6 +79,32 @@ export class JobsController {
     return implement(contract.jobs.delete).handler(({ input }) => {
       const { jobId } = input;
       return this.jobsService.deleteJob(jobId);
+    });
+  }
+
+  @Post('/:jobId/share')
+  @Implement(contract.jobs.generateUrl)
+  async generateJobUrl() {
+    return implement(contract.jobs.generateUrl).handler(({ input }) => {
+      const { jobId } = input;
+      return this.jobsService.generateJobUrl(jobId);
+    });
+  }
+
+  @Get('/shared/:shareToken')
+  @Implement(contract.jobs.getSharedJob)
+  async getSharedJob() {
+    return implement(contract.jobs.getSharedJob).handler(({ input }) => {
+      const { shareToken } = input;
+      return this.jobsService.getSharedJobByToken(shareToken);
+    });
+  }
+
+  @Post('/:jobId/invite')
+  @Implement(contract.jobs.invite)
+  async inviteJob() {
+    return implement(contract.jobs.invite).handler(({ input }) => {
+      return this.jobsService.inviteJob(input);
     });
   }
 }

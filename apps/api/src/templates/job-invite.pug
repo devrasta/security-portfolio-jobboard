@@ -1,0 +1,42 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Company invitation
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border: 1px solid #dddddd;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4f46e5;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 4px;
+      }
+  body
+    .container
+      .header
+        h1 You're invited to see a draft job!
+      p Hello,
+      p You have been invited to see a draft job posted by #{companyName} on our platform.
+      p
+        a.button(href=jobInvitationLink target="_blank") Check out the posted job
+      p Please note that this job is currently in draft status and may not be visible to the public yet. 
+      p You can view the job details and provide feedback if necessary.

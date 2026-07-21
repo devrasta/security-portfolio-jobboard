@@ -1,29 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import {
+  CreateJobDto,
   JOB_WITH_COMPANY_NAME_INCLUDE,
   JobDto,
   JobWithCompanyName,
+  UpdateJobDto,
 } from './jobs.dto';
+import { ConfigService } from '@nestjs/config';
+import { TokenService } from '../security/token.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class JobsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+    private readonly tokenService: TokenService,
+    private readonly mailService: MailService,
+  ) {}
 
-  async createJob(
-    companyId: string,
-    title: string,
-    location: string,
-    description: string,
-    ownerId: string,
-  ): Promise<JobDto> {
+  async createJob(createJobDto: CreateJobDto): Promise<JobDto> {
     const job = await this.prisma.job.create({
       data: {
-        companyId,
-        title,
-        location,
-        description,
-        ownerId,
+        companyId: createJobDto.companyId,
+        title: createJobDto.title,
+        location: createJobDto.location,
+        description: createJobDto.description,
+        ownerId: createJobDto.currentUserId,
         status: 'DRAFT',
       },
       include: JOB_WITH_COMPANY_NAME_INCLUDE,
@@ -50,20 +54,15 @@ export class JobsService {
     return this.toJobDto(job);
   }
 
-  async updateJob(
-    jobId: string,
-    title?: string,
-    location?: string,
-    description?: string,
-    ownerId?: string,
-  ): Promise<JobDto> {
+  async updateJob(updateJobDto: UpdateJobDto): Promise<JobDto> {
     const job = await this.prisma.job.update({
-      where: { id: jobId },
+      where: { id: updateJobDto.jobId },
       data: {
-        title,
-        location,
-        description,
-        ownerId,
+        title: updateJobDto.title,
+        location: updateJobDto.location,
+        description: updateJobDto.description,
+        ownerId: updateJobDto.ownerId,
+        status: updateJobDto.status,
       },
       include: JOB_WITH_COMPANY_NAME_INCLUDE,
     });
@@ -82,6 +81,101 @@ export class JobsService {
     }
   }
 
+  async generateJobUrl(jobId: string): Promise<string> {
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+    const job = await this.prisma.job.findUnique({
+      where: { id: jobId },
+      include: JOB_WITH_COMPANY_NAME_INCLUDE,
+    });
+    if (!job) {
+      throw new Error(`Job with ID ${jobId} not found`);
+    }
+
+    if (job.status === 'PUBLISHED') {
+      const frontJobUrl = `${frontendUrl}/company/${job.companyId}/jobs/${jobId}`;
+      return frontJobUrl;
+    }
+
+    if (!job.shareToken || job.shareTokenExpiresAt < new Date()) {
+      const shareToken = this.tokenService.generateRandomToken(16);
+
+      this.prisma.job.update({
+        where: { id: jobId },
+        data: {
+          shareToken,
+          shareTokenExpiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        },
+      });
+
+      return `${frontendUrl}/jobs/shared/${shareToken}`;
+    } else {
+      return `${frontendUrl}/jobs/shared/${job.shareToken}`;
+    }
+  }
+
+  async getSharedJobByToken(shareToken: string): Promise<JobDto> {
+    const job = await this.prisma.job.findFirst({
+      where: {
+        shareToken,
+        shareTokenExpiresAt: { gte: new Date() },
+      },
+      include: JOB_WITH_COMPANY_NAME_INCLUDE,
+    });
+
+    if (!job) {
+      throw new Error('Invalid or expired share token');
+    }
+
+    return this.toJobDto(job);
+  }
+
+  async inviteJob(inviteJobDto: {
+    companyId: string;
+    jobId: string;
+    email: string;
+  }): Promise<string> {
+    const job = await this.prisma.job.findUnique({
+      where: { id: inviteJobDto.jobId },
+      include: JOB_WITH_COMPANY_NAME_INCLUDE,
+    });
+
+    if (!job) {
+      throw new Error(`Job with ID ${inviteJobDto.jobId} not found`);
+    }
+
+    try {
+      const invitationToken = this.tokenService.generateRandomToken(16);
+      this.prisma.jobInvite.create({
+        data: {
+          jobId: inviteJobDto.jobId,
+          email: inviteJobDto.email,
+          token: invitationToken,
+          status: 'PENDING',
+          expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000), // 48 hours from now
+        },
+      });
+      try {
+        const invitationLink = `${this.configService.get<string>('FRONTEND_URL')}/invite?token=${invitationToken}`;
+
+        await this.mailService.sendJobInviteEmail({
+          to: inviteJobDto.email,
+          jobTitle: job.title,
+          companyName: job.company.name,
+          jobInvitationLink: invitationLink,
+        });
+      } catch (error) {
+        throw new Error(
+          `Failed to send invitation email: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
+    } catch (error) {
+      throw new Error(
+        `Failed to create job invitation: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+    return `Invitation sent to ${inviteJobDto.email} for job ${job.title}`;
+  }
+
   private toJobDto(job: JobWithCompanyName): JobDto {
     return {
       id: job.id,
@@ -89,6 +183,7 @@ export class JobsService {
       company: job.company.name,
       location: job.location,
       description: job.description,
+      status: job.status,
     };
   }
 }

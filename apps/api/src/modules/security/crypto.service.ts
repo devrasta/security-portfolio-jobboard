@@ -15,7 +15,6 @@ export class CryptoService implements OnModuleInit {
   // ═══════════════════════════════════════════════════════
 
   onModuleInit() {
-    // ✅ GET KEY FROM CONFIG (.env)
     const encryptionKey = this.config.get<string>('ENCRYPTION_KEY');
 
     if (!encryptionKey) {

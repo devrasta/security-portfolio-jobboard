@@ -45,4 +45,22 @@ export class MailService {
       },
     });
   }
+
+  async sendJobInviteEmail(params: {
+    to: string;
+    jobTitle: string;
+    companyName: string;
+    jobInvitationLink: string;
+  }): Promise<void> {
+    await this.sendMail({
+      to: params.to,
+      subject: `You've been invited to apply for the job: ${params.jobTitle}`,
+      template: 'job-invite',
+      context: {
+        jobTitle: params.jobTitle,
+        companyName: params.companyName,
+        invitationLink: params.jobInvitationLink,
+      },
+    });
+  }
 }
