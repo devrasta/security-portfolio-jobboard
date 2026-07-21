@@ -1,0 +1,26 @@
+meta {
+  name: List Jobs
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/companies/:companyId/jobs
+  body: none
+  auth: bearer
+}
+
+params:path {
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard (no @RequiredRole, so any
+  member of the company can list jobs).
+
+  Contract input is { companyId } from the path. Returns an array of jobs.
+}

@@ -1,11 +1,22 @@
 import { Implement, implement } from '@orpc/nest';
 import { contract } from '@repo/contracts';
-import { Controller, Post, Get, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  UseGuards,
+  Req,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { JwtAuthGuard } from '../security/guards/jwt-auth.guard';
 import type { Request } from 'express';
+import { CompanyMemberGuard } from '../../common/guards/company-member.guard';
+import { RequiredRole } from '../../common/decorators/required-role.decorator';
 
 @Controller('/companies/:companyId/jobs')
+@UseGuards(JwtAuthGuard, CompanyMemberGuard)
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
@@ -34,9 +45,39 @@ export class JobsController {
       return this.jobsService.getJobs(companyId);
     });
   }
-  //     POST   /companies/:companyId/jobs             → créer un job (MEMBER+)
-  // GET    /companies/:companyId/jobs             → lister les jobs de l'entreprise
-  // GET    /companies/:companyId/jobs/:jobId      → voir un job (MEMBER+)
-  // PATCH  /companies/:companyId/jobs/:jobId      → modifier (OWNER du job ou ADMIN+)
-  // DELETE /companies/:companyId/jobs/:jobId      → supprimer (OWNER du job ou ADMIN+)
+
+  @Get('/:jobId')
+  @Implement(contract.jobs.getById)
+  async getJob() {
+    return implement(contract.jobs.getById).handler(({ input }) => {
+      const { jobId } = input;
+      return this.jobsService.getJob(jobId);
+    });
+  }
+
+  @Patch('/:jobId')
+  @RequiredRole('ADMIN')
+  @Implement(contract.jobs.update)
+  async updateJob() {
+    return implement(contract.jobs.update).handler(({ input }) => {
+      const { jobId, title, location, description, ownerId } = input;
+      return this.jobsService.updateJob(
+        jobId,
+        title,
+        location,
+        description,
+        ownerId,
+      );
+    });
+  }
+
+  @Delete('/:jobId')
+  @RequiredRole('OWNER')
+  @Implement(contract.jobs.delete)
+  async deleteJob() {
+    return implement(contract.jobs.delete).handler(({ input }) => {
+      const { jobId } = input;
+      return this.jobsService.deleteJob(jobId);
+    });
+  }
 }

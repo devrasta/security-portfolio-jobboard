@@ -1,0 +1,28 @@
+meta {
+  name: Get Job
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/companies/:companyId/jobs/:jobId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+  jobId: replace-with-job-id
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard (no @RequiredRole, so any
+  member of the company can view a job).
+
+  Contract input is { companyId, jobId } from the path. companyId is used
+  only for the guard — the service looks up the job by jobId alone.
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Create Job
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/companies/:companyId/jobs
+  body: json
+  auth: bearer
+}
+
+params:path {
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "title": "Backend Engineer",
+    "location": "Paris",
+    "description": "Building and maintaining the job board API."
+  }
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard (no @RequiredRole, so any
+  member of the company can create a job).
+
+  Contract input is { companyId, title, location, description } — companyId
+  comes from the path, the rest from the body.
+}

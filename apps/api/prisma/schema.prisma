@@ -159,7 +159,7 @@ model Job {
   status      JobStatus
   ownerId     String
   owner User @relation(fields: [ownerId], references: [id])
-  shareToken  String?   @unique // ABAC : accès par lien
+  shareToken  String?   @unique
   invitees    JobInvite[]
   company      Company    @relation(fields: [companyId], references: [id])
   createdAt   DateTime  @default(now())

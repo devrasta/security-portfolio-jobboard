@@ -1,0 +1,41 @@
+meta {
+  name: Update Job
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/companies/:companyId/jobs/:jobId
+  body: json
+  auth: bearer
+}
+
+params:path {
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+  jobId: replace-with-job-id
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "title": "Senior Backend Engineer",
+    "location": "Remote",
+    "description": "Updated job description."
+  }
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard, and the caller must have the
+  ADMIN role in the company (@RequiredRole('ADMIN')).
+
+  Contract input is { companyId, jobId, title?, location?, description?,
+  ownerId? } — companyId and jobId come from the path, the rest are
+  optional fields sent in the body.
+}

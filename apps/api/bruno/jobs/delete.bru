@@ -1,0 +1,28 @@
+meta {
+  name: Delete Job
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/companies/:companyId/jobs/:jobId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+  jobId: replace-with-job-id
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard, and the caller must have the
+  OWNER role in the company (@RequiredRole('OWNER')).
+
+  Contract input is { companyId, jobId } from the path. Returns a
+  confirmation string on success.
+}

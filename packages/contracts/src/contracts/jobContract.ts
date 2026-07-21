@@ -78,6 +78,7 @@ const updateJobContract = oc
       title: z.string().max(200).optional(),
       location: z.string().max(200).optional(),
       description: z.string().max(1000).optional(),
+      ownerId: z.string().optional(),
     }),
   )
   .output(
