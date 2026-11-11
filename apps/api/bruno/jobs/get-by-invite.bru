@@ -1,0 +1,27 @@
+meta {
+  name: Get Job By Invite Token
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/jobs/invite/:inviteToken
+  body: none
+  auth: none
+}
+
+params:path {
+  inviteToken: replace-with-invite-token
+}
+
+docs {
+  No auth guard on purpose: this is the public endpoint behind the link
+  emailed by "Invite To Job" ({FRONTEND_URL}/invite?token=xxx). Lives on
+  PublicJobsController (route /jobs/*), same as "Get Shared Job".
+
+  Contract input is { inviteToken } from the path. Looks up a JobInvite
+  row whose token matches, status is PENDING, and expiresAt is still in
+  the future; returns 500 ("Invalid or expired invitation token")
+  otherwise. Returns the underlying job's public fields (no status field,
+  same shape as "Get Shared Job").
+}

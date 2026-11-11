@@ -28,7 +28,7 @@ export class JobsService {
         location: createJobDto.location,
         description: createJobDto.description,
         ownerId: createJobDto.currentUserId,
-        status: 'DRAFT',
+        status: createJobDto.status ?? 'DRAFT',
       },
       include: JOB_WITH_COMPANY_NAME_INCLUDE,
     });
@@ -91,15 +91,20 @@ export class JobsService {
       throw new Error(`Job with ID ${jobId} not found`);
     }
 
+    // Published jobs are public: direct link to the public job page
+    // (no token, no auth). Drafts/archived go through an expiring token.
     if (job.status === 'PUBLISHED') {
-      const frontJobUrl = `${frontendUrl}/company/${job.companyId}/jobs/${jobId}`;
-      return frontJobUrl;
+      return `${frontendUrl}/jobs/public/${jobId}`;
     }
 
-    if (!job.shareToken || job.shareTokenExpiresAt < new Date()) {
+    if (
+      !job.shareToken ||
+      !job.shareTokenExpiresAt ||
+      job.shareTokenExpiresAt < new Date()
+    ) {
       const shareToken = this.tokenService.generateRandomToken(16);
 
-      this.prisma.job.update({
+      await this.prisma.job.update({
         where: { id: jobId },
         data: {
           shareToken,
@@ -111,6 +116,28 @@ export class JobsService {
     } else {
       return `${frontendUrl}/jobs/shared/${job.shareToken}`;
     }
+  }
+
+  async listPublicJobs(): Promise<JobDto[]> {
+    const jobs = await this.prisma.job.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { createdAt: 'desc' },
+      include: JOB_WITH_COMPANY_NAME_INCLUDE,
+    });
+    return jobs.map((job) => this.toJobDto(job));
+  }
+
+  async getPublicJob(jobId: string): Promise<JobDto> {
+    const job = await this.prisma.job.findFirst({
+      where: { id: jobId, status: 'PUBLISHED' },
+      include: JOB_WITH_COMPANY_NAME_INCLUDE,
+    });
+
+    if (!job) {
+      throw new Error('Job not found');
+    }
+
+    return this.toJobDto(job);
   }
 
   async getSharedJobByToken(shareToken: string): Promise<JobDto> {
@@ -129,6 +156,23 @@ export class JobsService {
     return this.toJobDto(job);
   }
 
+  async getJobByInviteToken(inviteToken: string): Promise<JobDto> {
+    const invite = await this.prisma.jobInvite.findFirst({
+      where: {
+        token: inviteToken,
+        status: 'PENDING',
+        expiresAt: { gte: new Date() },
+      },
+      include: { job: { include: JOB_WITH_COMPANY_NAME_INCLUDE } },
+    });
+
+    if (!invite) {
+      throw new Error('Invalid or expired invitation token');
+    }
+
+    return this.toJobDto(invite.job);
+  }
+
   async inviteJob(inviteJobDto: {
     companyId: string;
     jobId: string;
@@ -145,7 +189,7 @@ export class JobsService {
 
     try {
       const invitationToken = this.tokenService.generateRandomToken(16);
-      this.prisma.jobInvite.create({
+      await this.prisma.jobInvite.create({
         data: {
           jobId: inviteJobDto.jobId,
           email: inviteJobDto.email,

@@ -22,7 +22,7 @@ export interface CreateJobDto {
   location: string;
   description: string;
   currentUserId: string;
-  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+  status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 }
 export interface UpdateJobDto {
   jobId: string;

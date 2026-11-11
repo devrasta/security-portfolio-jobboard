@@ -1,0 +1,50 @@
+meta {
+  name: Invite To Job
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/companies/:companyId/jobs/:jobId/invite
+  body: json
+  auth: bearer
+}
+
+params:path {
+  companyId: 3ad4d39f-8a12-491e-8f7b-f0b371861622
+  jobId: replace-with-job-id
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "email": "replace-with-invitee-email"
+  }
+}
+
+docs {
+  Requires JwtAuthGuard + CompanyMemberGuard (no @RequiredRole, so any
+  member of the company can send a job invite).
+
+  Contract input is { companyId, jobId, email } — companyId and jobId
+  come from the path, email from the body.
+
+  Creates a JobInvite row (status PENDING, random token, 48h TTL) and
+  sends an email with a link to
+  {FRONTEND_URL}/invite?token=xxx — local SMTP (port 1025) must be
+  running for the email to go through, otherwise this 500s (email send
+  wrapped in a try/catch that rethrows).
+
+  The emailed link is consumed by "Get Job By Invite Token"
+  (GET /jobs/invite/:inviteToken, public, no auth) — the front page at
+  /invite?token=xxx calls that endpoint to display the job.
+
+  Returns a confirmation string on success.
+}

@@ -118,13 +118,38 @@ describe('ValidationService', () => {
       expect(service.getPasswordStrength('aaaaaaaaaaaA')).toBe(3);
     });
 
-    it('should return 4 for 12+ chars with mixed case and digit', () => {
-      expect(service.getPasswordStrength('aaaaaaaaaaA1')).toBe(4);
+    it('should cap at 3 for 12+ chars with mixed case and digit but no special char', () => {
+      expect(service.getPasswordStrength('aaaaaaaaaaA1')).toBe(3);
     });
 
-    it('should cap at 4 for password meeting all criteria', () => {
-      // Raw score: >=8 (+1), >=12 (+1), mixed case (+1), digit (+1), special (+1) = 5 → capped to 4
+    it('should cap at 3 for a short password with all character classes', () => {
+      // 10 chars: >=8, mixed case, digit, special → raw 4, but not strong (< 12)
+      expect(service.getPasswordStrength('Password1!')).toBe(3);
+    });
+
+    it('should return 4 for password meeting all criteria', () => {
       expect(service.getPasswordStrength('aaaaaaaaaaA1@')).toBe(4);
+    });
+
+    it('should return 4 if and only if isStrongPassword is true', () => {
+      const samples = [
+        '',
+        'aaaaaaaa',
+        'aaaaaaaaaaaA',
+        'aaaaaaaaaaA1',
+        'Password1!',
+        'Aa1@',
+        'aaaaaaaaaaA1@',
+        'StrongPass1@ab',
+        'StrongPass1^ab',
+        'WEAKPASSWORD1@',
+        'StrongPassword1',
+      ];
+      for (const p of samples) {
+        expect(service.getPasswordStrength(p) === 4).toBe(
+          service.isStrongPassword(p),
+        );
+      }
     });
 
     it('should return correct score for short password with variety', () => {

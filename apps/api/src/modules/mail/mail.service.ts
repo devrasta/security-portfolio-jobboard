@@ -59,7 +59,7 @@ export class MailService {
       context: {
         jobTitle: params.jobTitle,
         companyName: params.companyName,
-        invitationLink: params.jobInvitationLink,
+        jobInvitationLink: params.jobInvitationLink,
       },
     });
   }

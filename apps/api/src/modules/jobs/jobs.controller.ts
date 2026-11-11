@@ -91,15 +91,6 @@ export class JobsController {
     });
   }
 
-  @Get('/shared/:shareToken')
-  @Implement(contract.jobs.getSharedJob)
-  async getSharedJob() {
-    return implement(contract.jobs.getSharedJob).handler(({ input }) => {
-      const { shareToken } = input;
-      return this.jobsService.getSharedJobByToken(shareToken);
-    });
-  }
-
   @Post('/:jobId/invite')
   @Implement(contract.jobs.invite)
   async inviteJob() {

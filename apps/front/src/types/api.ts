@@ -110,3 +110,19 @@ export interface TwoFactorSetup {
   secret: string
   qrCode: string
 }
+
+export const JOB_STATUSES = ['DRAFT', 'PUBLISHED', 'ARCHIVED'] as const
+
+export type JobStatus = (typeof JOB_STATUSES)[number]
+
+export interface Job {
+  id: string
+  title: string
+  company: string
+  location: string
+  description: string
+  status: JobStatus
+}
+
+/** Offre telle qu'exposée par les endpoints publics (sans statut). */
+export type PublicJob = Omit<Job, 'status'>

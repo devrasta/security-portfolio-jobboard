@@ -162,6 +162,63 @@ const sharedJobContract = oc
     }),
   );
 
+const jobInviteContract = oc
+  .route({
+    method: "GET",
+    path: "/jobs/invite/:inviteToken",
+  })
+  .input(
+    z.object({
+      inviteToken: z.string(),
+    }),
+  )
+  .output(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      company: z.string(),
+      location: z.string(),
+      description: z.string(),
+    }),
+  );
+
+const publicJobContract = oc
+  .route({
+    method: "GET",
+    path: "/jobs/public/:jobId",
+  })
+  .input(
+    z.object({
+      jobId: z.uuid(),
+    }),
+  )
+  .output(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      company: z.string(),
+      location: z.string(),
+      description: z.string(),
+    }),
+  );
+
+const publicJobsListContract = oc
+  .route({
+    method: "GET",
+    path: "/jobs/public",
+  })
+  .output(
+    z.array(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        company: z.string(),
+        location: z.string(),
+        description: z.string(),
+      }),
+    ),
+  );
+
 export const JobContract = {
   create: createJobContract,
   get: getJobsContract,
@@ -171,4 +228,7 @@ export const JobContract = {
   generateUrl: generateJobUrlContract,
   invite: inviteJobContract,
   getSharedJob: sharedJobContract,
+  getJobByInvite: jobInviteContract,
+  getPublicJob: publicJobContract,
+  listPublicJobs: publicJobsListContract,
 };

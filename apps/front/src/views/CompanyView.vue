@@ -1,9 +1,17 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { companyApi } from '@/lib/endpoints'
+import { RouterLink } from 'vue-router'
+import { companyApi, jobsApi } from '@/lib/endpoints'
 import { ApiError } from '@/lib/api'
-import { COMPANY_ROLES } from '@/types/api'
-import type { Company, CompanyMemberSummary, CompanyRole, CompanySummary } from '@/types/api'
+import { COMPANY_ROLES, JOB_STATUSES } from '@/types/api'
+import type {
+  Company,
+  CompanyMemberSummary,
+  CompanyRole,
+  CompanySummary,
+  Job,
+  JobStatus,
+} from '@/types/api'
 
 function errorMessage(err: unknown, fallback: string) {
   return err instanceof ApiError ? err.message : fallback
@@ -63,10 +71,11 @@ async function handleSelect(id: string) {
   lookupLoading.value = true
   try {
     company.value = await companyApi.get(id)
-    await loadMembers()
+    await Promise.all([loadMembers(), loadJobs()])
   } catch (err) {
     company.value = null
     members.value = []
+    jobs.value = []
     lookupError.value = errorMessage(err, 'Entreprise introuvable')
   } finally {
     lookupLoading.value = false
@@ -81,6 +90,7 @@ async function handleDelete() {
     await companyApi.remove(company.value.id)
     company.value = null
     members.value = []
+    jobs.value = []
     await loadCompanies()
   } catch (err) {
     lookupError.value = errorMessage(err, 'Suppression impossible')
@@ -156,6 +166,71 @@ async function handleInvite() {
     inviteError.value = errorMessage(err, 'Invitation impossible')
   } finally {
     inviteLoading.value = false
+  }
+}
+
+// --- Offres d'emploi --------------------------------------------------------
+const jobs = ref<Job[]>([])
+const jobsLoading = ref(false)
+const jobsError = ref('')
+
+async function loadJobs() {
+  if (!company.value) return
+  jobsLoading.value = true
+  try {
+    jobs.value = await jobsApi.list(company.value.id)
+  } catch (err) {
+    jobs.value = []
+    jobsError.value = errorMessage(err, 'Chargement des offres impossible')
+  } finally {
+    jobsLoading.value = false
+  }
+}
+
+const newJobTitle = ref('')
+const newJobLocation = ref('')
+const newJobDescription = ref('')
+const newJobStatus = ref<JobStatus>('DRAFT')
+const jobCreateError = ref('')
+const jobCreateLoading = ref(false)
+// Le formulaire de création et le message « Aucune offre » sont exclusifs.
+const showJobForm = ref(false)
+
+function resetJobForm() {
+  newJobTitle.value = ''
+  newJobLocation.value = ''
+  newJobDescription.value = ''
+  newJobStatus.value = 'DRAFT'
+  jobCreateError.value = ''
+}
+
+function openJobForm() {
+  resetJobForm()
+  showJobForm.value = true
+}
+
+function closeJobForm() {
+  resetJobForm()
+  showJobForm.value = false
+}
+
+async function handleCreateJob() {
+  if (!company.value) return
+  jobCreateError.value = ''
+  jobCreateLoading.value = true
+  try {
+    await jobsApi.create(company.value.id, {
+      title: newJobTitle.value,
+      location: newJobLocation.value,
+      description: newJobDescription.value,
+      status: newJobStatus.value,
+    })
+    closeJobForm()
+    await loadJobs()
+  } catch (err) {
+    jobCreateError.value = errorMessage(err, "Création de l'offre impossible")
+  } finally {
+    jobCreateLoading.value = false
   }
 }
 </script>
@@ -299,6 +374,91 @@ async function handleInvite() {
             >
               {{ inviteLoading ? 'Envoi…' : 'Inviter' }}
             </button>
+          </form>
+        </div>
+
+        <div>
+          <h4 class="mb-2 font-medium">Offres d'emploi</h4>
+          <p v-if="jobsError" class="mb-3 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {{ jobsError }}
+          </p>
+          <p v-if="jobsLoading" class="text-sm text-muted-foreground">Chargement des offres…</p>
+          <ul v-else class="divide-y divide-border rounded-md border border-border text-sm">
+            <li v-for="job in jobs" :key="job.id">
+              <RouterLink
+                :to="{ name: 'job-detail', params: { companyId: company.id, jobId: job.id } }"
+                class="flex w-full items-center justify-between gap-4 px-4 py-2 hover:bg-muted/50"
+              >
+                <span class="font-medium">{{ job.title }}</span>
+                <span class="text-muted-foreground">{{ job.location }} · {{ job.status }}</span>
+              </RouterLink>
+            </li>
+            <li v-if="jobs.length === 0 && !showJobForm" class="px-4 py-2 text-muted-foreground">
+              Aucune offre
+            </li>
+          </ul>
+
+          <button
+            v-if="!showJobForm"
+            class="mt-4 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+            @click="openJobForm"
+          >
+            Nouvelle offre
+          </button>
+
+          <form
+            v-else
+            class="mt-4 flex max-w-xl flex-col gap-2"
+            @submit.prevent="handleCreateJob"
+          >
+            <p v-if="jobCreateError" class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              {{ jobCreateError }}
+            </p>
+            <input
+              v-model="newJobTitle"
+              type="text"
+              required
+              placeholder="Titre du poste"
+              class="rounded-md border border-input bg-background px-3 py-2 text-sm"
+            />
+            <input
+              v-model="newJobLocation"
+              type="text"
+              required
+              placeholder="Localisation"
+              class="rounded-md border border-input bg-background px-3 py-2 text-sm"
+            />
+            <textarea
+              v-model="newJobDescription"
+              required
+              placeholder="Description"
+              rows="3"
+              class="rounded-md border border-input bg-background px-3 py-2 text-sm"
+            />
+            <select
+              v-model="newJobStatus"
+              class="self-start rounded-md border border-input bg-background px-3 py-2 text-sm"
+            >
+              <option v-for="status in JOB_STATUSES" :key="status" :value="status">
+                {{ status }}
+              </option>
+            </select>
+            <div class="flex gap-2">
+              <button
+                type="submit"
+                :disabled="jobCreateLoading"
+                class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+              >
+                {{ jobCreateLoading ? 'Création…' : "Créer l'offre" }}
+              </button>
+              <button
+                type="button"
+                class="rounded-md border border-border px-4 py-2 text-sm hover:bg-muted/50"
+                @click="closeJobForm"
+              >
+                Annuler
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -16,6 +16,7 @@ async function handleLogout() {
     <header v-if="auth.isAuthenticated" class="border-b border-border bg-card">
       <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <nav class="flex items-center gap-1">
+          <RouterLink :to="{ name: 'home' }" class="nav-link">Offres</RouterLink>
           <RouterLink :to="{ name: 'dashboard' }" class="nav-link">Tableau de bord</RouterLink>
           <RouterLink :to="{ name: 'activity' }" class="nav-link">Activité</RouterLink>
           <RouterLink :to="{ name: 'security' }" class="nav-link">Sécurité</RouterLink>
@@ -29,6 +30,17 @@ async function handleLogout() {
           >
             Se déconnecter
           </button>
+        </div>
+      </div>
+    </header>
+    <header v-else class="border-b border-border bg-card">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+        <nav class="flex items-center gap-1">
+          <RouterLink :to="{ name: 'home' }" class="nav-link">Offres</RouterLink>
+        </nav>
+        <div class="flex items-center gap-1">
+          <RouterLink :to="{ name: 'login' }" class="nav-link">Se connecter</RouterLink>
+          <RouterLink :to="{ name: 'register' }" class="nav-link">Créer un compte</RouterLink>
         </div>
       </div>
     </header>

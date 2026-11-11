@@ -6,6 +6,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'home',
+      component: () => import('../views/HomeView.vue'),
+    },
+    {
+      path: '/dashboard',
       name: 'dashboard',
       component: () => import('../views/DashboardView.vue'),
       meta: { requiresAuth: true },
@@ -39,6 +44,27 @@ const router = createRouter({
       name: 'company',
       component: () => import('../views/CompanyView.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/company/:companyId/jobs/:jobId',
+      name: 'job-detail',
+      component: () => import('../views/JobDetailView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/jobs/shared/:shareToken',
+      name: 'shared-job',
+      component: () => import('../views/SharedJobView.vue'),
+    },
+    {
+      path: '/jobs/public/:jobId',
+      name: 'public-job',
+      component: () => import('../views/SharedJobView.vue'),
+    },
+    {
+      path: '/invite',
+      name: 'job-invite',
+      component: () => import('../views/JobInviteView.vue'),
     },
   ],
 })

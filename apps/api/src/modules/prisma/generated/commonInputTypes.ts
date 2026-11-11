@@ -233,6 +233,23 @@ export type EnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumJobStatusFilter<$PrismaModel>
 }
 
+export type EnumJobInviteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobInviteStatus | Prisma.EnumJobInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JobInviteStatus[] | Prisma.ListEnumJobInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobInviteStatus[] | Prisma.ListEnumJobInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobInviteStatusFilter<$PrismaModel> | $Enums.JobInviteStatus
+}
+
+export type EnumJobInviteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobInviteStatus | Prisma.EnumJobInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JobInviteStatus[] | Prisma.ListEnumJobInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobInviteStatus[] | Prisma.ListEnumJobInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobInviteStatusWithAggregatesFilter<$PrismaModel> | $Enums.JobInviteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobInviteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobInviteStatusFilter<$PrismaModel>
+}
+
 export type JsonNullableFilter<$PrismaModel = never> =
 | Prisma.PatchUndefined<
     Prisma.Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -514,6 +531,23 @@ export type NestedEnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumJobStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumJobStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumJobInviteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobInviteStatus | Prisma.EnumJobInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JobInviteStatus[] | Prisma.ListEnumJobInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobInviteStatus[] | Prisma.ListEnumJobInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobInviteStatusFilter<$PrismaModel> | $Enums.JobInviteStatus
+}
+
+export type NestedEnumJobInviteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobInviteStatus | Prisma.EnumJobInviteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.JobInviteStatus[] | Prisma.ListEnumJobInviteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobInviteStatus[] | Prisma.ListEnumJobInviteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobInviteStatusWithAggregatesFilter<$PrismaModel> | $Enums.JobInviteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobInviteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobInviteStatusFilter<$PrismaModel>
 }
 
 export type NestedJsonNullableFilter<$PrismaModel = never> =

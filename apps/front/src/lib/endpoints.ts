@@ -7,6 +7,9 @@ import type {
   CompanyMemberSummary,
   CompanyRole,
   CompanySummary,
+  Job,
+  JobStatus,
+  PublicJob,
   SessionList,
   TwoFactorSetup,
   UserProfile,
@@ -49,4 +52,42 @@ export const companyApi = {
     apiFetch<string>(`/companies/${id}/members/${userId}`, { method: 'PATCH', body: { role } }),
   removeMember: (id: string, userId: string) =>
     apiFetch<string>(`/companies/${id}/members/${userId}`, { method: 'DELETE' }),
+}
+
+export const jobsApi = {
+  create: (
+    companyId: string,
+    data: { title: string; location: string; description: string; status?: JobStatus },
+  ) => apiFetch<Job>(`/companies/${companyId}/jobs`, { method: 'POST', body: data }),
+  list: (companyId: string) => apiFetch<Job[]>(`/companies/${companyId}/jobs`),
+  get: (companyId: string, jobId: string) =>
+    apiFetch<Job>(`/companies/${companyId}/jobs/${jobId}`),
+  update: (
+    companyId: string,
+    jobId: string,
+    data: Partial<{
+      title: string
+      location: string
+      description: string
+      ownerId: string
+      status: JobStatus
+    }>,
+  ) => apiFetch<Job>(`/companies/${companyId}/jobs/${jobId}`, { method: 'PATCH', body: data }),
+  remove: (companyId: string, jobId: string) =>
+    apiFetch<string>(`/companies/${companyId}/jobs/${jobId}`, { method: 'DELETE' }),
+  generateShareLink: (companyId: string, jobId: string) =>
+    apiFetch<string>(`/companies/${companyId}/jobs/${jobId}/share`, { method: 'POST' }),
+  invite: (companyId: string, jobId: string, email: string) =>
+    apiFetch<string>(`/companies/${companyId}/jobs/${jobId}/invite`, {
+      method: 'POST',
+      body: { email },
+    }),
+  // Public endpoints, no auth required.
+  getShared: (shareToken: string) =>
+    apiFetch<Job>(`/jobs/shared/${shareToken}`, { skipRefresh: true }),
+  listPublic: () => apiFetch<PublicJob[]>('/jobs/public', { skipRefresh: true }),
+  getPublic: (jobId: string) =>
+    apiFetch<Job>(`/jobs/public/${jobId}`, { skipRefresh: true }),
+  getByInviteToken: (inviteToken: string) =>
+    apiFetch<Job>(`/jobs/invite/${inviteToken}`, { skipRefresh: true }),
 }

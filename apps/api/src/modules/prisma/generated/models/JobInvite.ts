@@ -25,40 +25,64 @@ export type AggregateJobInvite = {
 }
 
 export type JobInviteMinAggregateOutputType = {
+  id: string | null
   jobId: string | null
   email: string | null
+  token: string | null
+  status: $Enums.JobInviteStatus | null
+  expiresAt: Date | null
   createdAt: Date | null
 }
 
 export type JobInviteMaxAggregateOutputType = {
+  id: string | null
   jobId: string | null
   email: string | null
+  token: string | null
+  status: $Enums.JobInviteStatus | null
+  expiresAt: Date | null
   createdAt: Date | null
 }
 
 export type JobInviteCountAggregateOutputType = {
+  id: number
   jobId: number
   email: number
+  token: number
+  status: number
+  expiresAt: number
   createdAt: number
   _all: number
 }
 
 
 export type JobInviteMinAggregateInputType = {
+  id?: true
   jobId?: true
   email?: true
+  token?: true
+  status?: true
+  expiresAt?: true
   createdAt?: true
 }
 
 export type JobInviteMaxAggregateInputType = {
+  id?: true
   jobId?: true
   email?: true
+  token?: true
+  status?: true
+  expiresAt?: true
   createdAt?: true
 }
 
 export type JobInviteCountAggregateInputType = {
+  id?: true
   jobId?: true
   email?: true
+  token?: true
+  status?: true
+  expiresAt?: true
   createdAt?: true
   _all?: true
 }
@@ -136,8 +160,12 @@ export type JobInviteGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 export type JobInviteGroupByOutputType = {
+  id: string
   jobId: string
   email: string
+  token: string
+  status: $Enums.JobInviteStatus
+  expiresAt: Date
   createdAt: Date
   _count: JobInviteCountAggregateOutputType | null
   _min: JobInviteMinAggregateOutputType | null
@@ -163,33 +191,49 @@ export type JobInviteWhereInput = {
   AND?: Prisma.JobInviteWhereInput | Prisma.JobInviteWhereInput[]
   OR?: Prisma.JobInviteWhereInput[]
   NOT?: Prisma.JobInviteWhereInput | Prisma.JobInviteWhereInput[]
+  id?: Prisma.StringFilter<"JobInvite"> | string
   jobId?: Prisma.StringFilter<"JobInvite"> | string
   email?: Prisma.StringFilter<"JobInvite"> | string
+  token?: Prisma.StringFilter<"JobInvite"> | string
+  status?: Prisma.EnumJobInviteStatusFilter<"JobInvite"> | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFilter<"JobInvite"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"JobInvite"> | Date | string
   job?: Prisma.XOR<Prisma.JobScalarRelationFilter, Prisma.JobWhereInput>
 }
 
 export type JobInviteOrderByWithRelationInput = {
+  id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  token?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   job?: Prisma.JobOrderByWithRelationInput
 }
 
 export type JobInviteWhereUniqueInput = Prisma.AtLeast<{
+  id?: string
+  token?: string
   jobId_email?: Prisma.JobInviteJobIdEmailCompoundUniqueInput
   AND?: Prisma.JobInviteWhereInput | Prisma.JobInviteWhereInput[]
   OR?: Prisma.JobInviteWhereInput[]
   NOT?: Prisma.JobInviteWhereInput | Prisma.JobInviteWhereInput[]
   jobId?: Prisma.StringFilter<"JobInvite"> | string
   email?: Prisma.StringFilter<"JobInvite"> | string
+  status?: Prisma.EnumJobInviteStatusFilter<"JobInvite"> | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFilter<"JobInvite"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"JobInvite"> | Date | string
   job?: Prisma.XOR<Prisma.JobScalarRelationFilter, Prisma.JobWhereInput>
-}, "jobId_email">
+}, "id" | "token" | "jobId_email">
 
 export type JobInviteOrderByWithAggregationInput = {
+  id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  token?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.JobInviteCountOrderByAggregateInput
   _max?: Prisma.JobInviteMaxOrderByAggregateInput
@@ -200,49 +244,81 @@ export type JobInviteScalarWhereWithAggregatesInput = {
   AND?: Prisma.JobInviteScalarWhereWithAggregatesInput | Prisma.JobInviteScalarWhereWithAggregatesInput[]
   OR?: Prisma.JobInviteScalarWhereWithAggregatesInput[]
   NOT?: Prisma.JobInviteScalarWhereWithAggregatesInput | Prisma.JobInviteScalarWhereWithAggregatesInput[]
+  id?: Prisma.StringWithAggregatesFilter<"JobInvite"> | string
   jobId?: Prisma.StringWithAggregatesFilter<"JobInvite"> | string
   email?: Prisma.StringWithAggregatesFilter<"JobInvite"> | string
+  token?: Prisma.StringWithAggregatesFilter<"JobInvite"> | string
+  status?: Prisma.EnumJobInviteStatusWithAggregatesFilter<"JobInvite"> | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeWithAggregatesFilter<"JobInvite"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"JobInvite"> | Date | string
 }
 
 export type JobInviteCreateInput = {
+  id?: string
   email: string
+  token: string
+  status?: $Enums.JobInviteStatus
+  expiresAt: Date | string
   createdAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutInviteesInput
 }
 
 export type JobInviteUncheckedCreateInput = {
+  id?: string
   jobId: string
   email: string
+  token: string
+  status?: $Enums.JobInviteStatus
+  expiresAt: Date | string
   createdAt?: Date | string
 }
 
 export type JobInviteUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobInviteStatusFieldUpdateOperationsInput | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutInviteesNestedInput
 }
 
 export type JobInviteUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobInviteStatusFieldUpdateOperationsInput | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobInviteCreateManyInput = {
+  id?: string
   jobId: string
   email: string
+  token: string
+  status?: $Enums.JobInviteStatus
+  expiresAt: Date | string
   createdAt?: Date | string
 }
 
 export type JobInviteUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobInviteStatusFieldUpdateOperationsInput | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobInviteUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobInviteStatusFieldUpdateOperationsInput | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -262,20 +338,32 @@ export type JobInviteJobIdEmailCompoundUniqueInput = {
 }
 
 export type JobInviteCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  token?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type JobInviteMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  token?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type JobInviteMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  token?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -321,13 +409,25 @@ export type JobInviteUncheckedUpdateManyWithoutJobNestedInput = {
   deleteMany?: Prisma.JobInviteScalarWhereInput | Prisma.JobInviteScalarWhereInput[]
 }
 
+export type EnumJobInviteStatusFieldUpdateOperationsInput = {
+  set?: $Enums.JobInviteStatus
+}
+
 export type JobInviteCreateWithoutJobInput = {
+  id?: string
   email: string
+  token: string
+  status?: $Enums.JobInviteStatus
+  expiresAt: Date | string
   createdAt?: Date | string
 }
 
 export type JobInviteUncheckedCreateWithoutJobInput = {
+  id?: string
   email: string
+  token: string
+  status?: $Enums.JobInviteStatus
+  expiresAt: Date | string
   createdAt?: Date | string
 }
 
@@ -361,61 +461,97 @@ export type JobInviteScalarWhereInput = {
   AND?: Prisma.JobInviteScalarWhereInput | Prisma.JobInviteScalarWhereInput[]
   OR?: Prisma.JobInviteScalarWhereInput[]
   NOT?: Prisma.JobInviteScalarWhereInput | Prisma.JobInviteScalarWhereInput[]
+  id?: Prisma.StringFilter<"JobInvite"> | string
   jobId?: Prisma.StringFilter<"JobInvite"> | string
   email?: Prisma.StringFilter<"JobInvite"> | string
+  token?: Prisma.StringFilter<"JobInvite"> | string
+  status?: Prisma.EnumJobInviteStatusFilter<"JobInvite"> | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFilter<"JobInvite"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"JobInvite"> | Date | string
 }
 
 export type JobInviteCreateManyJobInput = {
+  id?: string
   email: string
+  token: string
+  status?: $Enums.JobInviteStatus
+  expiresAt: Date | string
   createdAt?: Date | string
 }
 
 export type JobInviteUpdateWithoutJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobInviteStatusFieldUpdateOperationsInput | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobInviteUncheckedUpdateWithoutJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobInviteStatusFieldUpdateOperationsInput | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobInviteUncheckedUpdateManyWithoutJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJobInviteStatusFieldUpdateOperationsInput | $Enums.JobInviteStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
 
 export type JobInviteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
   jobId?: boolean
   email?: boolean
+  token?: boolean
+  status?: boolean
+  expiresAt?: boolean
   createdAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobInvite"]>
 
 export type JobInviteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
   jobId?: boolean
   email?: boolean
+  token?: boolean
+  status?: boolean
+  expiresAt?: boolean
   createdAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobInvite"]>
 
 export type JobInviteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
   jobId?: boolean
   email?: boolean
+  token?: boolean
+  status?: boolean
+  expiresAt?: boolean
   createdAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobInvite"]>
 
 export type JobInviteSelectScalar = {
+  id?: boolean
   jobId?: boolean
   email?: boolean
+  token?: boolean
+  status?: boolean
+  expiresAt?: boolean
   createdAt?: boolean
 }
 
-export type JobInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"jobId" | "email" | "createdAt", ExtArgs["result"]["jobInvite"]>
+export type JobInviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "email" | "token" | "status" | "expiresAt" | "createdAt", ExtArgs["result"]["jobInvite"]>
 export type JobInviteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
 }
@@ -432,8 +568,12 @@ export type $JobInvitePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     job: Prisma.$JobPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
+    id: string
     jobId: string
     email: string
+    token: string
+    status: $Enums.JobInviteStatus
+    expiresAt: Date
     createdAt: Date
   }, ExtArgs["result"]["jobInvite"]>
   composites: {}
@@ -518,8 +658,8 @@ export interface JobInviteDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    * // Get first 10 JobInvites
    * const jobInvites = await prisma.jobInvite.findMany({ take: 10 })
    * 
-   * // Only select the `jobId`
-   * const jobInviteWithJobIdOnly = await prisma.jobInvite.findMany({ select: { jobId: true } })
+   * // Only select the `id`
+   * const jobInviteWithIdOnly = await prisma.jobInvite.findMany({ select: { id: true } })
    * 
    */
   findMany<T extends JobInviteFindManyArgs>(args?: Prisma.SelectSubset<T, JobInviteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -563,9 +703,9 @@ export interface JobInviteDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    *   ]
    * })
    * 
-   * // Create many JobInvites and only return the `jobId`
-   * const jobInviteWithJobIdOnly = await prisma.jobInvite.createManyAndReturn({
-   *   select: { jobId: true },
+   * // Create many JobInvites and only return the `id`
+   * const jobInviteWithIdOnly = await prisma.jobInvite.createManyAndReturn({
+   *   select: { id: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -654,9 +794,9 @@ export interface JobInviteDelegate<ExtArgs extends runtime.Types.Extensions.Inte
    *   ]
    * })
    * 
-   * // Update zero or more JobInvites and only return the `jobId`
-   * const jobInviteWithJobIdOnly = await prisma.jobInvite.updateManyAndReturn({
-   *   select: { jobId: true },
+   * // Update zero or more JobInvites and only return the `id`
+   * const jobInviteWithIdOnly = await prisma.jobInvite.updateManyAndReturn({
+   *   select: { id: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -859,8 +999,12 @@ export interface Prisma__JobInviteClient<T, Null = never, ExtArgs extends runtim
  * Fields of the JobInvite model
  */
 export interface JobInviteFieldRefs {
+  readonly id: Prisma.FieldRef<"JobInvite", 'String'>
   readonly jobId: Prisma.FieldRef<"JobInvite", 'String'>
   readonly email: Prisma.FieldRef<"JobInvite", 'String'>
+  readonly token: Prisma.FieldRef<"JobInvite", 'String'>
+  readonly status: Prisma.FieldRef<"JobInvite", 'JobInviteStatus'>
+  readonly expiresAt: Prisma.FieldRef<"JobInvite", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"JobInvite", 'DateTime'>
 }
     

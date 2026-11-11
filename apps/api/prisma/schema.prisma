@@ -174,12 +174,24 @@ enum JobStatus {
 }
 
 model JobInvite {
+  id        String          @id @default(uuid())
   jobId     String
   email     String
-  job       Job      @relation(fields: [jobId], references: [id])
-  createdAt DateTime @default(now())
+  job       Job             @relation(fields: [jobId], references: [id])
+  token     String          @unique
+  status    JobInviteStatus @default(PENDING)
+  expiresAt DateTime
+  createdAt DateTime        @default(now())
 
-  @@id([jobId, email])
+  @@unique([jobId, email])
+  @@index([token])
+}
+
+enum JobInviteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
 }
 
 model AuditLog {

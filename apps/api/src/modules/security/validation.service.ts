@@ -7,32 +7,46 @@ export class ValidationService {
     return regex.test(email);
   }
 
-  isStrongPassword(password: string): boolean {
-    if (!password || password.length < 12) return false;
-    if (!/[a-z]/.test(password)) return false;
-    if (!/[A-Z]/.test(password)) return false;
-    if (!/\d/.test(password)) return false;
-    if (!/[@$!%*?&#_\-]/.test(password)) return false;
-    return true;
+  private static readonly MIN_STRONG_LENGTH = 12;
+
+  // Single source of truth for password criteria, shared by
+  // isStrongPassword and getPasswordStrength so they can never disagree.
+  private passwordCriteria(password: string) {
+    return {
+      minLength: password.length >= ValidationService.MIN_STRONG_LENGTH,
+      lower: /[a-z]/.test(password),
+      upper: /[A-Z]/.test(password),
+      digit: /\d/.test(password),
+      special: /[@$!%*?&#_\-]/.test(password),
+    };
   }
 
+  isStrongPassword(password: string): boolean {
+    if (!password) return false;
+    return Object.values(this.passwordCriteria(password)).every(Boolean);
+  }
+
+  /**
+   * Returns a 0–4 score. 4 is returned if and only if isStrongPassword()
+   * is true; any password failing at least one criterion is capped at 3.
+   */
   getPasswordStrength(password: string): number {
+    if (!password) return 0;
+    if (this.isStrongPassword(password)) return 4;
+
+    const c = this.passwordCriteria(password);
     let strength = 0;
 
-    if (!password || password.length === 0) {
-      return 0;
-    }
-
-    // Length check
+    // Length checks
     if (password.length >= 8) strength++;
-    if (password.length >= 12) strength++;
+    if (c.minLength) strength++;
 
     // Character variety checks
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-    if (/\d/.test(password)) strength++;
-    if (/[@$!%*?&#_\-]/.test(password)) strength++;
+    if (c.lower && c.upper) strength++;
+    if (c.digit) strength++;
+    if (c.special) strength++;
 
-    return Math.min(strength, 4);
+    return Math.min(strength, 3);
   }
 
   isValidUrl(url: string): boolean {

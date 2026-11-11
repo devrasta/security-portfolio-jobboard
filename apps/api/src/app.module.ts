@@ -14,6 +14,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { MembersModule } from './modules/members/members.module';
 import { MailModule } from './modules/mail/mail.module';
+import { JobsModule } from './modules/jobs/jobs.module';
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { MailModule } from './modules/mail/mail.module';
     CompaniesModule,
     MembersModule,
     MailModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],

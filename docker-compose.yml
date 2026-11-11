@@ -49,6 +49,15 @@ services:
     networks:
       - jobboard
 
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "${SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_WEB_PORT:-8025}:8025"
+    networks:
+      - jobboard
+
 volumes:
   postgres_data:
 

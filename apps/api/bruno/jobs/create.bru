@@ -34,6 +34,9 @@ docs {
   Requires JwtAuthGuard + CompanyMemberGuard (no @RequiredRole, so any
   member of the company can create a job).
 
-  Contract input is { companyId, title, location, description } — companyId
-  comes from the path, the rest from the body.
+  Contract input is { companyId, title, location, description, status? } —
+  companyId comes from the path, the rest from the body. Note: `status`
+  is accepted by the contract/DTO but currently ignored by the service —
+  every job is created with status DRAFT regardless of what's sent. Flag
+  if PUBLISHED-on-create is expected to work.
 }
