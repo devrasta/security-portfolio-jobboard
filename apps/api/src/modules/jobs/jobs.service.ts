@@ -118,6 +118,31 @@ export class JobsService {
     }
   }
 
+  /**
+   * Invalidates the job's share token: any /jobs/shared/:token link stops
+   * working immediately. A new link can be generated afterwards.
+   * Note: a PUBLISHED job stays reachable at /jobs/public/:jobId — only
+   * unpublishing it removes that access.
+   */
+  async revokeLink(companyId: string, jobId: string): Promise<string> {
+    const job = await this.prisma.job.findFirst({
+      where: { id: jobId, companyId },
+      select: { id: true, shareToken: true },
+    });
+    if (!job) {
+      throw new Error(`Job with ID ${jobId} not found`);
+    }
+    if (!job.shareToken) {
+      return 'No active share link for this job';
+    }
+
+    await this.prisma.job.update({
+      where: { id: job.id },
+      data: { shareToken: null, shareTokenExpiresAt: null },
+    });
+    return 'Share link has been revoked';
+  }
+
   async listPublicJobs(): Promise<JobDto[]> {
     const jobs = await this.prisma.job.findMany({
       where: { status: 'PUBLISHED' },

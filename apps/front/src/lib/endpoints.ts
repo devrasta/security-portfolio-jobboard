@@ -77,6 +77,8 @@ export const jobsApi = {
     apiFetch<string>(`/companies/${companyId}/jobs/${jobId}`, { method: 'DELETE' }),
   generateShareLink: (companyId: string, jobId: string) =>
     apiFetch<string>(`/companies/${companyId}/jobs/${jobId}/share`, { method: 'POST' }),
+  revokeShareLink: (companyId: string, jobId: string) =>
+    apiFetch<string>(`/companies/${companyId}/jobs/${jobId}/share`, { method: 'DELETE' }),
   invite: (companyId: string, jobId: string, email: string) =>
     apiFetch<string>(`/companies/${companyId}/jobs/${jobId}/invite`, {
       method: 'POST',

@@ -91,6 +91,15 @@ export class JobsController {
     });
   }
 
+  @Delete('/:jobId/share')
+  @Implement(contract.jobs.revokeUrl)
+  async revokeLink() {
+    return implement(contract.jobs.revokeUrl).handler(({ input }) => {
+      const { companyId, jobId } = input;
+      return this.jobsService.revokeLink(companyId, jobId);
+    });
+  }
+
   @Post('/:jobId/invite')
   @Implement(contract.jobs.invite)
   async inviteJob() {

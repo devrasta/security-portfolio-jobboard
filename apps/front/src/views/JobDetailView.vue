@@ -85,8 +85,27 @@ const shareLink = ref('')
 const shareError = ref('')
 const shareLoading = ref(false)
 
+const shareSuccess = ref('')
+const revokeLoading = ref(false)
+
+async function handleRevokeShareLink() {
+  if (!window.confirm('Supprimer le lien de partage ? Il ne fonctionnera plus pour personne.')) return
+  shareError.value = ''
+  shareSuccess.value = ''
+  revokeLoading.value = true
+  try {
+    shareSuccess.value = await jobsApi.revokeShareLink(companyId, jobId)
+    shareLink.value = ''
+  } catch (err) {
+    shareError.value = errorMessage(err, 'Suppression du lien impossible')
+  } finally {
+    revokeLoading.value = false
+  }
+}
+
 async function handleGenerateShareLink() {
   shareError.value = ''
+  shareSuccess.value = ''
   shareLoading.value = true
   try {
     shareLink.value = await jobsApi.generateShareLink(companyId, jobId)
@@ -201,6 +220,9 @@ async function handleInvite() {
         <p v-if="shareError" class="mb-3 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {{ shareError }}
         </p>
+        <p v-if="shareSuccess" class="mb-3 rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-600">
+          {{ shareSuccess }}
+        </p>
         <div class="flex flex-wrap items-center gap-2">
           <button
             :disabled="shareLoading"
@@ -216,7 +238,21 @@ async function handleInvite() {
             class="min-w-0 flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
             @focus="($event.target as HTMLInputElement).select()"
           />
+          <!-- Le lien à token (brouillon/archivé) est révocable, même s'il a été
+               généré lors d'une session précédente. -->
+          <button
+            v-if="job?.status !== 'PUBLISHED'"
+            :disabled="revokeLoading"
+            class="rounded-md border border-destructive px-4 py-2 text-sm text-destructive hover:bg-destructive/10 disabled:opacity-50"
+            @click="handleRevokeShareLink"
+          >
+            {{ revokeLoading ? 'Suppression…' : 'Supprimer le lien' }}
+          </button>
         </div>
+        <p v-if="job?.status === 'PUBLISHED'" class="mt-3 text-xs text-muted-foreground">
+          Offre publiée : le lien public reste accessible tant que l'offre est publiée. Pour
+          ne plus la partager, repasse-la en brouillon ou archive-la.
+        </p>
       </section>
 
       <section class="rounded-lg border border-border bg-card p-6">

@@ -124,6 +124,21 @@ const generateJobUrlContract = oc
     }),
   )
   .output(z.url());
+const revokeJobUrlContract = oc
+  .route({
+    method: "DELETE",
+    path: "/companies/:companyId/jobs/:jobId/share",
+  })
+  .input(
+    z.object({
+      companyId: z.string(),
+      jobId: z.string(),
+    }),
+  )
+  .output(
+    z.string().describe("Confirmation message that the share link has been revoked"),
+  );
+
 const inviteJobContract = oc
   .route({
     method: "POST",
@@ -226,6 +241,7 @@ export const JobContract = {
   update: updateJobContract,
   delete: deleteJobContract,
   generateUrl: generateJobUrlContract,
+  revokeUrl: revokeJobUrlContract,
   invite: inviteJobContract,
   getSharedJob: sharedJobContract,
   getJobByInvite: jobInviteContract,
