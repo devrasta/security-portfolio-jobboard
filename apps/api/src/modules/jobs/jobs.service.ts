@@ -43,9 +43,14 @@ export class JobsService {
     return jobs.map((job) => this.toJobDto(job));
   }
 
-  async getJob(jobId: string): Promise<JobDto> {
-    const job = await this.prisma.job.findUnique({
-      where: { id: jobId },
+  // Every job lookup by ID is scoped to the company from the URL: the
+  // CompanyMemberGuard only checks membership of :companyId, so without this
+  // filter a member of company A could read/edit company B's jobs (IDOR).
+  // A job from another company is reported as "not found".
+
+  async getJob(companyId: string, jobId: string): Promise<JobDto> {
+    const job = await this.prisma.job.findFirst({
+      where: { id: jobId, companyId },
       include: JOB_WITH_COMPANY_NAME_INCLUDE,
     });
     if (!job) {
@@ -56,7 +61,7 @@ export class JobsService {
 
   async updateJob(updateJobDto: UpdateJobDto): Promise<JobDto> {
     const job = await this.prisma.job.update({
-      where: { id: updateJobDto.jobId },
+      where: { id: updateJobDto.jobId, companyId: updateJobDto.companyId },
       data: {
         title: updateJobDto.title,
         location: updateJobDto.location,
@@ -69,10 +74,10 @@ export class JobsService {
     return this.toJobDto(job);
   }
 
-  async deleteJob(jobId: string): Promise<string> {
+  async deleteJob(companyId: string, jobId: string): Promise<string> {
     try {
       await this.prisma.job.delete({
-        where: { id: jobId },
+        where: { id: jobId, companyId },
       });
       return `Job with ID ${jobId} has been deleted`;
     } catch (error: unknown) {
@@ -81,10 +86,10 @@ export class JobsService {
     }
   }
 
-  async generateJobUrl(jobId: string): Promise<string> {
+  async generateJobUrl(companyId: string, jobId: string): Promise<string> {
     const frontendUrl = this.configService.get<string>('FRONTEND_URL');
-    const job = await this.prisma.job.findUnique({
-      where: { id: jobId },
+    const job = await this.prisma.job.findFirst({
+      where: { id: jobId, companyId },
       include: JOB_WITH_COMPANY_NAME_INCLUDE,
     });
     if (!job) {
@@ -105,7 +110,7 @@ export class JobsService {
       const shareToken = this.tokenService.generateRandomToken(16);
 
       await this.prisma.job.update({
-        where: { id: jobId },
+        where: { id: job.id },
         data: {
           shareToken,
           shareTokenExpiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
@@ -203,8 +208,8 @@ export class JobsService {
     jobId: string;
     email: string;
   }): Promise<string> {
-    const job = await this.prisma.job.findUnique({
-      where: { id: inviteJobDto.jobId },
+    const job = await this.prisma.job.findFirst({
+      where: { id: inviteJobDto.jobId, companyId: inviteJobDto.companyId },
       include: JOB_WITH_COMPANY_NAME_INCLUDE,
     });
 
@@ -216,7 +221,7 @@ export class JobsService {
       const invitationToken = this.tokenService.generateRandomToken(16);
       await this.prisma.jobInvite.create({
         data: {
-          jobId: inviteJobDto.jobId,
+          jobId: job.id,
           email: inviteJobDto.email,
           token: invitationToken,
           status: 'PENDING',

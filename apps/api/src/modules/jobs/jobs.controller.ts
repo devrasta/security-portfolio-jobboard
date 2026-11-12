@@ -50,8 +50,8 @@ export class JobsController {
   @Implement(contract.jobs.getById)
   async getJob() {
     return implement(contract.jobs.getById).handler(({ input }) => {
-      const { jobId } = input;
-      return this.jobsService.getJob(jobId);
+      const { companyId, jobId } = input;
+      return this.jobsService.getJob(companyId, jobId);
     });
   }
 
@@ -60,8 +60,17 @@ export class JobsController {
   @Implement(contract.jobs.update)
   async updateJob() {
     return implement(contract.jobs.update).handler(({ input }) => {
-      const { jobId, title, location, description, ownerId, status } = input;
+      const {
+        companyId,
+        jobId,
+        title,
+        location,
+        description,
+        ownerId,
+        status,
+      } = input;
       return this.jobsService.updateJob({
+        companyId,
         jobId,
         title,
         location,
@@ -77,8 +86,8 @@ export class JobsController {
   @Implement(contract.jobs.delete)
   async deleteJob() {
     return implement(contract.jobs.delete).handler(({ input }) => {
-      const { jobId } = input;
-      return this.jobsService.deleteJob(jobId);
+      const { companyId, jobId } = input;
+      return this.jobsService.deleteJob(companyId, jobId);
     });
   }
 
@@ -86,8 +95,8 @@ export class JobsController {
   @Implement(contract.jobs.generateUrl)
   async generateJobUrl() {
     return implement(contract.jobs.generateUrl).handler(({ input }) => {
-      const { jobId } = input;
-      return this.jobsService.generateJobUrl(jobId);
+      const { companyId, jobId } = input;
+      return this.jobsService.generateJobUrl(companyId, jobId);
     });
   }
 

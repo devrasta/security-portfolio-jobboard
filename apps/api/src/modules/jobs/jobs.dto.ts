@@ -25,6 +25,7 @@ export interface CreateJobDto {
   status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 }
 export interface UpdateJobDto {
+  companyId: string;
   jobId: string;
   title?: string;
   location?: string;

@@ -1,0 +1,2 @@
+- [ ] ownerId dans updateJob : il est pris tel quel dans la requête. Un ADMIN peut donc désigner comme propriétaire d'une offre un utilisateur qui n'est pas membre de l'entreprise. Il faudrait vérifier que cet utilisateur est bien membre.
+- [ ] Codes HTTP : quand l'offre est introuvable, le service lève une Error générique, ce qui donne probablement une erreur 500 plutôt qu'une 404. C'était déjà le cas avant.
