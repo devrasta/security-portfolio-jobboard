@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 async function handleLogout() {
   await auth.logout()
@@ -45,7 +46,8 @@ async function handleLogout() {
       </div>
     </header>
 
-    <main class="mx-auto max-w-5xl px-4 py-8">
+    <!-- meta.fullWidth : la vue gère elle-même sa largeur (ex. hero pleine page). -->
+    <main :class="route.meta.fullWidth ? '' : 'mx-auto max-w-5xl px-4 py-8'">
       <RouterView />
     </main>
   </div>
